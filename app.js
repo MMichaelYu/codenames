@@ -21,7 +21,7 @@ db.once('open', function() {
         return [...Array(len)].reduce(a=>a+p[~~(Math.random()*p.length)],'');
     }
     
-    serv.listen(2000);
+    serv.listen(process.env.PORT || 5000);
     console.log("Server started.");
     console.log(randomString(5));
     
@@ -65,7 +65,7 @@ db.once('open', function() {
             numPlayers: num,
             players: players
         },
-        function(err, game) {
+        function( err, game ) {
             var data = game.toJSON();
             //Response with game record and add player id
             //to be stored locally
