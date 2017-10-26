@@ -1,36 +1,81 @@
-<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<!DOCTYPE html>
+<html lang="en">
 
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"
-></script>
-<script>
-    var ctx = document.getElementById("ctx").getContext("2d");
-    ctx.font = "30px Arial";
-    var socket = io();
+<head>
+    <meta charset="UTF-8">
+    <title>Codenames</title>
+</head>
 
-    socket.on('newPositions',function(data){
-        ctx.clearRect(0,0,500,500);
-        for(var i = 0 ; i < data.length ; i++)
-            ctx.fillText(data[i].number,data[i].x,data[i].y);
-    });
+<body>
+    <form>
+        Room:<br>
+        <input type="text" name="roomname" id="roomname"><br>
+    </form>
+    <button type="button" id="createbutton">Create game</button>
+    <button type="button" id="joinbutton">Join game</button>
+    <canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 
-    document.onkeydown = function(event){
-        if(event.keyCode === 68)    //d
-            socket.emit('keyPress',{inputId:'right',state:true});
-        else if(event.keyCode === 83)   //s
-            socket.emit('keyPress',{inputId:'down',state:true});
-        else if(event.keyCode === 65)   //a
-            socket.emit('keyPress',{inputId:'left',state:true});
-        else if(event.keyCode === 87)   //w
-            socket.emit('keyPress',{inputId:'up',state:true});
-    }
-    document.onkeyup = function(event){
-        if(event.keyCode === 68)    //d
-            socket.emit('keyPress',{inputId:'right',state:false});
-        else if(event.keyCode === 83)   //s
-            socket.emit('keyPress',{inputId:'down',state:false});
-        else if(event.keyCode === 65)   //a
-            socket.emit('keyPress',{inputId:'left',state:false});
-        else if(event.keyCode === 87)   //w
-            socket.emit('keyPress',{inputId:'up',state:false});
-    }
-</script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
+
+    <script>
+        var ctx = document.getElementById("ctx").getContext("2d");
+        ctx.font = "30px Arial";
+        var socket = io();
+        console.log("socket made");
+        socket.on('newPositions', function (data) {
+            ctx.clearRect(0, 0, 500, 500);
+            for (var i = 0; i < data.length; i++)
+                ctx.fillText(data[i].number, data[i].x, data[i].y);
+        });
+
+        socket.on('connect', function() {
+            console.log("socket connected");
+          document.getElementById("createbutton").addEventListener("click", function () {
+              console.log("buttonpress");
+              socket.emit("creategame");
+          });
+          document.getElementById("joinbutton").addEventListener("click", function () {
+              roomname = document.getElementById("roomname").value;
+              console.log(roomname);
+              socket.emit("joingame");
+          });
+
+         });
+
+
+        var Game = Backbone.Model.extend({
+            start: function (data) {
+                //POST name and number of players to server to create game
+                return this.save(data, { url: '/start' });
+            }
+        });
+
+        document.onkeydown = function (event) {
+            if (event.keyCode === 68)    //d
+                socket.emit('keyPress', { inputId: 'right', state: true });
+            else if (event.keyCode === 83)   //s
+                socket.emit('keyPress', { inputId: 'down', state: true });
+            else if (event.keyCode === 65)   //a
+                socket.emit('keyPress', { inputId: 'left', state: true });
+            else if (event.keyCode === 87)   //w
+                socket.emit('keyPress', { inputId: 'up', state: true });
+        }
+        document.onkeyup = function (event) {
+            if (event.keyCode === 68)    //d
+                socket.emit('keyPress', { inputId: 'right', state: false });
+            else if (event.keyCode === 83)   //s
+                socket.emit('keyPress', { inputId: 'down', state: false });
+            else if (event.keyCode === 65)   //a
+                socket.emit('keyPress', { inputId: 'left', state: false });
+            else if (event.keyCode === 87)   //w
+                socket.emit('keyPress', { inputId: 'up', state: false });
+        }
+    </script>
+
+</body>
+
+</html>
