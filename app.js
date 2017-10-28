@@ -23,7 +23,6 @@ db.once('open', function() {
     
     serv.listen(process.env.PORT || 5000);
     console.log("Server started.");
-    console.log(randomString(5));
     
     mongoose.Schema({
         room: {type: String, index: true},
