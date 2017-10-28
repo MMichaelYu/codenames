@@ -17,9 +17,9 @@
 
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-    <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
-    <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
-    <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
+    <script src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script src="https://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
+    <script src="https://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
 
     <script>
         var ctx = document.getElementById("ctx").getContext("2d");
@@ -47,12 +47,12 @@
          });
 
 
-        var Game = Backbone.Model.extend({
-            start: function (data) {
-                //POST name and number of players to server to create game
-                return this.save(data, { url: '/start' });
-            }
-        });
+        // var Game = Backbone.Model.extend({
+        //     start: function (data) {
+        //         //POST name and number of players to server to create game
+        //         return this.save(data, { url: '/start' });
+        //     }
+        // });
 
         document.onkeydown = function (event) {
             if (event.keyCode === 68)    //d
