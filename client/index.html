@@ -36,12 +36,12 @@
             console.log("socket connected");
           document.getElementById("createbutton").addEventListener("click", function () {
               console.log("buttonpress");
-              socket.emit("creategame");
+              socket.emit("createGame");
           });
           document.getElementById("joinbutton").addEventListener("click", function () {
               roomname = document.getElementById("roomname").value;
               console.log(roomname);
-              socket.emit("joingame");
+              socket.emit('joinGame', {roomName: roomname});
           });
 
          });

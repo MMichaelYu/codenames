@@ -126,6 +126,14 @@ db.once('open', function() {
             else if(data.inputId === 'down')
                 player.pressingDown = data.state;
         });
+
+        socket.on('createGame',function(data){
+            //TODO: implement
+        });
+
+        socket.on('joinGame', function(data){
+            //TODO: implement
+        });
     });
     
     setInterval(function() {
