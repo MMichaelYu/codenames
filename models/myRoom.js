@@ -20,7 +20,5 @@ const myRoomSchema = new Schema({
 const myPlayer = mongoose.model('myPlayer', myPlayerSchema);
 const myRoom = mongoose.model('myRoom', myRoomSchema);
 
-module.exports = {
-    myPlayer, 
-    myRoom
-};
+module.exports = myPlayer;
+module.exports = myRoom;
