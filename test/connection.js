@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 //ES6 Promises
 mongoose.Promise = global.Promise;
-
+ 
 //Connect to database before tests run
 before(function(done){
     //Connect to mongodb
@@ -16,3 +16,10 @@ before(function(done){
     });
 });
 
+//Drop the characters collection before each test
+beforeEach(function(done){
+    //Drop the collection
+    mongoose.connection.collections.myrooms.drop(function(){
+        done();
+    });
+});
