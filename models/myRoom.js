@@ -15,6 +15,8 @@ const myRoomSchema = new Schema({
     status: String,
     numPlayers: Number,
     players: [myPlayerSchema]
+    //whose turn is it
+    //25-array tuples of word,color,isitrevealed yet
 });
 
 const myPlayer = mongoose.model('myPlayer', myPlayerSchema);
