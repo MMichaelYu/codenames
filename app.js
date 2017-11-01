@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
+const myRoom = require('models/myRoom.js');
 
 app.get('/',function(req,res) {
     res.sendFile(__dirname + '/client/index.html');
@@ -128,10 +129,39 @@ db.once('open', function() {
 
         socket.on('createGame',function(data){
             //TODO: implement
+            myRoomName = randomString(8);
+            playerID = randomString(4);
+            socket.join(myRoomName);
+            //Create default room and save to mongodb
+            var room = new myRoom({
+                roomID: myRoomName,
+                status: 'waiting',
+                numPlayers: 1,
+                players: [playerID],
+                whoseTurn: "blue",
+                words: ["mist", "slope", "line", "town", "order",
+                        "stitch", "camera", "brick", "channel", "cook",
+                        "lock", "things", "stretch", "butter", "root",
+                        "bead", "bell", "mountain", "income", "slave",
+                        "train", "cannon", "canvas", "dust", "humor"],
+                revealedWords: [0,0,0,0,0,
+                                0,0,0,0,0,
+                                0,0,0,0,0,
+                                0,0,0,0,0,
+                                0,0,0,0,0],
+                colorWords: ["blue", "red", "black", "brown", "brown",
+                            "red", "brown", "brown", "brown", "blue",
+                            "blue", "blue", "blue", "red", "red",
+                            "blue", "blue", "blue,", "blue", "brown",
+                            "red", "red", "red", "red", "brown"]
+
+            });
         });
 
         socket.on('joinGame', function(data){
             //TODO: implement
+            socket.join(data.roomName);
+            //TODO: check for error here
         });
     });
     

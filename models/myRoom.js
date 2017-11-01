@@ -14,8 +14,12 @@ const myRoomSchema = new Schema({
     roomID: String,
     status: String,
     numPlayers: Number,
-    players: [myPlayerSchema]
+    players: [String],
     //whose turn is it
+    whoseTurn: String,
+    words: [String],
+    revealedWords: [Boolean],
+    colorWords: [String]
     //25-array tuples of word,color,isitrevealed yet
 });
 
