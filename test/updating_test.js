@@ -1,10 +1,8 @@
 const assert = require('assert');
 const myRoom = require('../models/myRoom.js');
 
-
-
 //Describe tests
-describe('Deleting records', function(){
+describe('Updating records', function(){
     var room;
     beforeEach(function(done){
         room = new myRoom({
@@ -19,16 +17,15 @@ describe('Deleting records', function(){
     });
     
     //Create tests
-    it('Delete one record from database', function(done){
+    it('Update one record in database', function(done){
         //Finds all records of myRoom
         //myRoom.find({})
 
-        myRoom.findOneAndRemove({ roomID: '123rt'}).then(function(result){
-            myRoom.findOne({roomID: '123rt'}).then(function(result){
-                assert(result === null);
+        myRoom.findOneAndUpdate({roomID: '123rt'},{roomID: '234ty'}).then(function(){
+            myRoom.findOne({_id: room._id}).then(function(result){
+                assert(result.roomID === '234ty');
                 done();
             });
-
         });
 
 

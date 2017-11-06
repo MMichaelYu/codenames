@@ -14,7 +14,6 @@ describe('Finding records', function(){
         });
 
         room.save().then(function(){
-            assert(room.isNew === false);
             done();
         });
     });
