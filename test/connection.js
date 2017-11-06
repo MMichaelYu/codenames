@@ -16,7 +16,7 @@ before(function(done){
     });
 });
 
-//Drop the characters collection before each test
+//Drop the collection before each test
 beforeEach(function(done){
     //Drop the collection
     mongoose.connection.collections.myrooms.drop(function(){
