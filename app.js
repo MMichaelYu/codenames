@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
-const myRoom = require('models/myRoom.js');
+const myRoom = require('./models/myRoom.js');
 
 app.get('/',function(req,res) {
     res.sendFile(__dirname + '/client/index.html');
@@ -137,7 +137,7 @@ db.once('open', function() {
                 roomID: myRoomName,
                 status: 'waiting',
                 numPlayers: 1,
-                players: [playerID],
+                //players: [playerID],
                 whoseTurn: "blue",
                 words: ["mist", "slope", "line", "town", "order",
                         "stitch", "camera", "brick", "channel", "cook",
