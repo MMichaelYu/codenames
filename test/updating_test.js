@@ -8,7 +8,8 @@ describe('Updating records', function(){
         room = new myRoom({
             roomID: '123rt',
             status: 'waiting',
-            numPlayers: 4
+            numPlayers: 4,
+            players: [{id: '321asd', team: 'blue', role: 'captain'}]
         });
 
         room.save().then(function(){
