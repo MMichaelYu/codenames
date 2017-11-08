@@ -132,11 +132,12 @@ db.once('open', function() {
             myRoomName = randomString(8);
             playerID = randomString(4);
             socket.join(myRoomName);
-            //Create default room and save to mongodb
+            //Create default room
             var room = new myRoom({
                 roomID: myRoomName,
                 status: 'waiting',
                 numPlayers: 1,
+                players: [{id: playerID, team: "blue", role: "captain"}],
                 //players: [playerID],
                 whoseTurn: "blue",
                 words: ["mist", "slope", "line", "town", "order",
@@ -156,11 +157,21 @@ db.once('open', function() {
                             "red", "red", "red", "red", "brown"]
 
             });
+
+            //Save to mongoDB
+            room.save().then(function(done){
+                done();
+            });
+
+            //Tell client their roomID, playerID
+            io.to(myRoomName).emit('roomJoined',room);
+            console.log("sent myRoom object to clients");
         });
 
         socket.on('joinGame', function(data){
             //TODO: implement
             socket.join(data.roomName);
+            //update existing game in database and save it
             //TODO: check for error here
         });
     });
