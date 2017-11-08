@@ -4,6 +4,12 @@ const myRoom = require('../models/myRoom');
 
 //Describe tests
 describe('Nesting records', function(){
+    
+    beforeEach(function(done){
+        mongoose.connection.collections.myrooms.drop(function(){
+            done();
+        });
+    });
     //Create tests
     it('Create a myRoom with sub-documents', function(done){
         var room = new myRoom({
@@ -27,7 +33,14 @@ describe('Nesting records', function(){
         
         room.save().then(function(){
             myRoom.findOne({roomID: '123qwe'}).then(function(record){
-
+                //add a player to the players array
+                record.players.push({id: '890iop', team: 'read', role: 'captain'});
+                record.save().then(function(){
+                    myRoom.findOne({roomID: '123qwe'}).then(function(result){
+                        assert(result.players.length === 2);
+                        done();
+                    });
+                });
             });
         });
     });

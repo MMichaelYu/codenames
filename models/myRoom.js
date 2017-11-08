@@ -18,7 +18,9 @@ const myRoomSchema = new Schema({
     //whose turn is it
     whoseTurn: String,
     words: [String],
+    //0 is unrevealed, 1 is revealed 
     revealedWords: [Boolean],
+    //blue/red/black/brown
     colorWords: [String]
     //25-array tuples of word,color,isitrevealed yet
 });
