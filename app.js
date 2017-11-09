@@ -130,14 +130,14 @@ db.once('open', function() {
         socket.on('createGame',function(data){
             //TODO: implement
             myRoomName = randomString(8);
-            playerID = randomString(4);
-            socket.join(myRoomName, function(){
+            //playerID = randomString(4);
+            socket.join('default', function(){
                 //Create default room
                 var room = new myRoom({
                     roomID: myRoomName,
                     status: 'waiting',
                     numPlayers: 1,
-                    players: [{id: playerID, team: "blue", role: "captain"}],
+                    players: [{id: socket.id, team: "blue", role: "captain"}],
                     //players: [playerID],
                     whoseTurn: "blue",
                     words: ["mist", "slope", "line", "town", "order",
@@ -160,8 +160,9 @@ db.once('open', function() {
 
                 //Save to mongoDB
                 room.save().then(function(){
-                    //Tell client their roomID, playerID
-                    socket.emit('myroomjoined',room);
+                    console.log("have not emitted");
+                    //Tell client their roomID, playerID through the room object
+                    SOCKET_LIST[socket.id].emit('myroomjoined',room);
                     //io.in("default").emit('myroomjoined', room);
                     console.log("now in rooms", socket.rooms);
                 });
@@ -176,7 +177,7 @@ db.once('open', function() {
         });
     });
     
-    setInterval(function() {
+    setInterval(() => {
         var pack = [];
         for(var i in PLAYER_LIST) {
             var player = PLAYER_LIST[i];

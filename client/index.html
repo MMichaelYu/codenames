@@ -33,8 +33,9 @@
         });
 
         //TODO: implement roomjoined method
-        socket.on('myroomjoined', function(data) {
-            console.log(data.roomID);
+        socket.on('myroomjoined', (data) => {
+            //console.log(data.roomID);
+            console.log('roomID:' + data.roomID);
         });
 
         socket.on('connect', function() {
