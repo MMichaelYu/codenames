@@ -32,6 +32,11 @@
                 ctx.fillText(data[i].number, data[i].x, data[i].y);
         });
 
+        //TODO: implement roomjoined method
+        socket.on('myroomjoined', function(data) {
+            console.log(data.roomID);
+        });
+
         socket.on('connect', function() {
             console.log("socket connected");
           document.getElementById("createbutton").addEventListener("click", function () {
@@ -43,9 +48,11 @@
               console.log(roomname);
               socket.emit('joinGame', {roomName: roomname});
           });
+        });
 
-         });
+        
 
+         
 
         // var Game = Backbone.Model.extend({
         //     start: function (data) {
