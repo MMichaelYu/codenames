@@ -131,7 +131,7 @@ db.once('open', function() {
             //TODO: implement
             myRoomName = randomString(8);
             //playerID = randomString(4);
-            socket.join('default', function(){
+            socket.join(myRoomName, function(){
                 //Create default room
                 var room = new myRoom({
                     roomID: myRoomName,
@@ -160,20 +160,43 @@ db.once('open', function() {
 
                 //Save to mongoDB
                 room.save().then(function(){
-                    console.log("have not emitted");
-                    //Tell client their roomID, playerID through the room object
+                    //Tell client info about roomID, playerID, and the game through the room object
                     SOCKET_LIST[socket.id].emit('myroomjoined',room);
                     //io.in("default").emit('myroomjoined', room);
-                    console.log("now in rooms", socket.rooms);
+                    //console.log("now in rooms", socket.rooms);
+                    console.log('socket has created a game');
                 });
             });
         });
 
         socket.on('joinGame', function(data){
             //TODO: implement
-            socket.join(data.roomName);
-            //update existing game in database and save it
-            //TODO: check for error here
+            socket.join(data.roomName, function(){
+                myRoom.findOne({roomID: data.roomName}).then(function(record){
+                    //update numplayers and playerid array
+                    record.numPlayers = record.numPlayers+1;
+                    if (record.players.length % 2 === 0) { //even 
+                        record.players.push({id: socket.id, team: "blue", role: "regular"});
+                    }
+                    else { //odd 
+                        record.players.push({id: socket.id, team: "red", role: "regular"});
+                    }
+
+                    //game can start with 4 players
+                    //check for 4 players and change status if needed
+                    if (record.numPlayers === 4) {
+                        record.status = 'starting';
+                    }
+
+                    //save to database
+                    record.save().then(function(){
+                        //Tell client info about roomID, playerID, and the game through room object
+                        SOCKET_LIST[socket.id].emit('myroomjoined',record);
+                        console.log('new client has joined game');
+                    });
+                });
+            });
+            //TODO: check for error here, if room doesn't exist
         });
     });
     

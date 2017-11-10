@@ -36,6 +36,12 @@
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
             console.log('roomID:' + data.roomID);
+            console.log('myplayerID:' + data.players[data.players.length-1].id);
+            //send myroomID every time emitting to server
+            var myroomID = data.roomID;
+            //game starts here
+            //put more socket events in this block
+
         });
 
         socket.on('connect', function() {
@@ -50,10 +56,6 @@
               socket.emit('joinGame', {roomName: roomname});
           });
         });
-
-        
-
-         
 
         // var Game = Backbone.Model.extend({
         //     start: function (data) {
