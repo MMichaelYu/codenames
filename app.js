@@ -4,6 +4,7 @@ var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
 const myRoom = require('./models/myRoom.js');
 
+
 var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
 , "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
 , "Athlete", "Atlantis", "Aunt", "Avocado", "Baby-Sitter", "Backbone", "Bag", "Baguette", "Bald", "Balloon"
@@ -76,6 +77,13 @@ var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alli
 //Variables used in sending 25 codewords to client
 var randNum= new Array(25);
 var noDuplicateCode= 1; 
+var colorGuessed= "";
+var num_guesses=0;
+var total_guesses=0;
+var revealed_red_count=0;
+var revealed_blue_count=0;
+var total_red= 8;
+var total_blue= 9; 
 
 
 app.get('/',function(req,res) {
@@ -145,7 +153,6 @@ db.once('open', function() {
             //to be stored locally
             data.action = 'start';
             data.player = pid;
-    
             res.send(data);
         });
     });
@@ -265,6 +272,118 @@ db.once('open', function() {
                 });
             });
             //TODO: check for error here, if room doesn't exist
+        });
+
+        //TODO: captainTurn socket sets num_guesses and total_guesses equal to whatever captain typed in 
+
+        socket.on('agentTurn', function(data) { //Call this function from frontend when Captain enters clue and hits submit
+            //Frontend needs to send a structure that holds the guessed word string and team color of player that
+            //guessed the word
+            if (data.team== "blue")
+            {
+                room.whoseTurn= "blue";
+            }
+            else if (data.team== "red")
+            {
+                room.whoseTurn= "red"; 
+            }
+            if (num_guesses== total_guesses) //At least one guess per turn is required
+            {
+                //TODO: Reveal to all players the word_guessed
+                for (var j=0; j<SOCKET_LIST.length; j++)
+                {
+                    socket.emit('guessedTiles', data.wordGuessed); //Display tiles to all players and gray out guessed tile
+                }
+                //Update revealedWords matrix and find color of word guessed
+                for (var k=0; k<25; k++)
+                {
+                    if (data.wordGuessed==room.words[k])
+                    {
+                        colorGuessed= room.colorWords[k];
+                        room.revealedWords[k]=1;
+                    }
+                }
+                //Make a decision based on the color of the word revealed
+                if (room.whoseTurn== colorGuessed) //Correct guess by agent
+                {
+                    num_guesses--; 
+                    if (room.whoseTurn== "blue")
+                    {
+                        revealed_blue_count++;
+                        if (revealed_blue_count==total_blue) //Check if blue team won
+                        {
+                            //Expectation for endGame from frontend: display who won and exit the game completely
+                             socket.emit('endGame', "blue"); //Blue team won
+                        }
+                    }
+                    else
+                    {
+                        revealed_red_count++;
+                        if (revealed_red_count== total_red)
+                        {
+                             socket.emit('endGame', "red"); //Red team n
+                        }
+                    }
+
+                }
+                else if (colorGuessed== "black") //Assassin tile
+                {
+                    if (room.whoseTurn== "red")
+                    {
+                        socket.emit('endGame', "blue"); //Blue team won
+                    }
+                    else
+                    {
+                        socket.emit('endGame', "red"); //Red team won
+                    }
+                }
+                else if (colorGuessed== "brown") //Neutral tile
+                {
+                    num_guesses=0; //Switch turns
+                }
+                else //Guessed opposing team's codeword 
+                {
+                    num_guesses=0; //Switch turns
+                    if (room.whoseTurn== "blue")
+                    {
+                        revealed_red_count++;
+                        if (revealed_red_count==total_red) //Check if red team won
+                        {
+                            socket.emit('endGame', "red"); //Red team won
+                        }
+                    }
+                    else
+                    {
+                        revealed_blue_count++;
+                        if (revealed_blue_count== total_blue) //Check if blue team won
+                        {
+                            socket.emit('endGame', "blue"); //Blue team won
+                        }
+                    }
+                }
+            }
+            else if (num_guesses!= total_guesses)
+            {
+                if (num_guesses==0 && (revealed_red_count != total_red && revealed_blue_count != total_blue)) //No more guesses and no winner
+                {
+                    //Switch turns
+                    if (room.whoseTurn== "red")
+                    {
+                        room.whoseTurn= "blue";
+                    }
+                    else
+                    {
+                        room.whoseTurn= "red";
+                    }
+                    scoket.emit('captainTurn', whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
+                }
+                else if (num_guesses>0 && (revealed_red_count != total_red && revealed_blue_count != total_blue))
+                {
+                    socket.emit('moreGuesses', whoseTurn); // TODO: Frontend asks user if they want to guess more
+                    //If they want to guess more, call agentTurn function again
+                    //If not,  call captainTurn function with appropriate team color
+                }
+            }
         });
     });
 });
