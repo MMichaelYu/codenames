@@ -412,12 +412,12 @@ db.once('open', function() {
                         room.whoseTurn= "red";
                     }
                     //mispelled, room.whoseTurn
-                    scoket.emit('captainTurn', whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
+                    socket.emit('captainTurn', room.whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
                 }
                 else if (num_guesses>0 && (revealed_red_count != total_red && revealed_blue_count != total_blue))
                 {
                     //room.whoseTurn
-                    socket.emit('moreGuesses', whoseTurn); // TODO: Frontend asks user if they want to guess more
+                    socket.emit('moreGuesses', room.whoseTurn); // TODO: Frontend asks user if they want to guess more
                     //If they want to guess more, call agentTurn function again
                     //If not,  call captainTurn function with appropriate team color
                 }
