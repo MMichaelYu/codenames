@@ -4,6 +4,88 @@ var serv = require('http').Server(app);
 var io = require('socket.io')(serv,{});
 const myRoom = require('./models/myRoom.js');
 
+
+var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
+, "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
+, "Athlete", "Atlantis", "Aunt", "Avocado", "Baby-Sitter", "Backbone", "Bag", "Baguette", "Bald", "Balloon"
+, "Banana", "Banister", "Baseball", "Baseboards", "Basketball", "Bat", "Battery", "Beach", "Beanstalk", "Bedbug"
+, "Beer", "Beethoven", "Belt", "Bib", "Bicycle", "Big", "Bike", "Billboard", "Bird"
+, "Birthday", "Bite", "Blacksmith", "Blanket", "Bleach", "Blimp", "Blossom", "Blueprint", "Blunt", "Blur"
+, "Boa", "Boat", "Bob", "Bobsled", "Body", "Bomb", "Bonnet", "Book", "Booth", "Bowtie"
+, "Box", "Boy", "Brainstorm", "Brand", "Brave", "Bride", "Bridge", "Broccoli", "Broken", "Broom"
+, "Bruise", "Brunette", "Bubble", "Buddy", "Buffalo", "Bulb", "Bunny", "Bus", "Buy", "Cabin"
+, "Cafeteria", "Cake", "Calculator", "Campsite", "Can", "Canada", "Candle", "Candy", "Cape", "Capitalism"
+, "Car", "Cardboard", "Cartography", "Cat", "Cd", "Ceiling", "Cell", "Century", "Chair", "Chalk"
+, "Champion", "Charger", "Cheerleader", "Chef", "Chess", "Chew", "Chicken", "Chime", "China", "Chocolate"
+, "Church", "Circus", "Clay", "Cliff", "Cloak", "Clockwork", "Clown", "Clue", "Coach", "Coal"
+, "Coaster", "Cog", "Cold", "College", "Comfort", "Computer", "Cone", "Constrictor", "Continuum", "Conversation"
+, "Cook", "Coop", "Cord", "Corduroy", "Cot", "Cough", "Cow", "Cowboy", "Crayon", "Cream"
+, "Crisp", "Criticize", "Crow", "Cruise", "Crumb", "Crust", "Cuff", "Curtain", "Cuticle", "Czar"
+, "Dad", "Dart", "Dawn", "Day", "Deep", "Defect", "Dent", "Dentist", "Desk", "Dictionary"
+, "Dimple", "Dirty", "Dismantle", "Ditch", "Diver", "Doctor", "Dog", "Doghouse", "Doll", "Dominoes"
+, "Door", "Dot", "Drain", "Draw", "Dream", "Dress", "Drink", "Drip", "Drums", "Dryer"
+, "Duck", "Dump", "Dunk", "Dust", "Ear", "Eat", "Ebony", "Elbow", "Electricity", "Elephant"
+, "Elevator", "Elf", "Elm", "Engine", "England", "Ergonomic", "Escalator", "Eureka", "Europe", "Evolution"
+, "Extension", "Eyebrow", "Fan", "Fancy", "Fast", "Feast", "Fence", "Feudalism", "Fiddle", "Figment"
+, "Finger", "Fire", "First", "Fishing", "Fix", "Fizz", "Flagpole", "Flannel", "Flashlight", "Flock"
+, "Flotsam", "Flower", "Flu", "Flush", "Flutter", "Fog", "Foil", "Football", "Forehead", "Forever"
+, "Fortnight", "France", "Freckle", "Freight", "Fringe", "Frog", "Frown", "Gallop", "Game", "Garbage"
+, "Garden", "Gasoline", "Gem", "Ginger", "Gingerbread", "Girl", "Glasses", "Goblin", "Gold", "Goodbye"
+, "Grandpa", "Grape", "Grass", "Gratitude", "Gray", "Green", "Guitar", "Gum", "Gumball", "Hair"
+, "Half", "Handle", "Handwriting", "Hang", "Happy", "Hat", "Hatch", "Headache", "Heart", "Hedge"
+, "Helicopter", "Hem", "Hide", "Hill", "Hockey", "Homework", "Honk", "Hopscotch", "Horse", "Hose"
+, "Hot", "House", "Houseboat", "Hug", "Humidifier", "Hungry", "Hurdle", "Hurt", "Hut", "Ice"
+, "Implode", "Inn", "Inquisition", "Intern", "Internet", "Invitation", "Ironic", "Ivory", "Ivy", "Jade", "Japan"
+, "Jeans", "Jelly", "Jet", "Jig", "Jog", "Journal", "Jump", "Key", "Killer", "Kilogram", "King"
+, "Kitchen", "Kite", "Knee", "Kneel", "Knife", "Knight", "Koala", "Lace", "Ladder", "Ladybug"
+, "Lag", "Landfill", "Lap", "Laugh", "Laundry", "Law", "Lawn", "Lawnmower", "Leak", "Leg"
+, "Letter", "Level", "Lifestyle", "Ligament", "Light", "Lightsaber", "Lime", "Lion", "Lizard", "Log"
+, "Loiterer", "Lollipop", "Loveseat", "Loyalty", "Lunch", "Lunchbox", "Lyrics", "Machine", "Macho", "Mailbox"
+, "Mammoth", "Mark", "Mars", "Mascot", "Mast", "Matchstick", "Mate", "Mattress", "Mess", "Mexico"
+, "Midsummer", "Mine", "Mistake", "Modern", "Mold", "Mom", "Monday", "Money", "Monitor", "Monster"
+, "Mooch", "Moon", "Mop", "Moth", "Motorcycle", "Mountain", "Mouse", "Mower", "Mud", "Music"
+, "Mute", "Nature", "Negotiate", "Neighbor", "Nest", "Neutron", "Niece", "Night", "Nightmare", "Nose"
+, "Oar", "Observatory", "Office", "Oil", "Old", "Olympian", "Opaque", "Opener", "Orbit", "Organ"
+, "Organize", "Outer", "Outside", "Ovation", "Overture", "Pail", "Paint", "Pajamas", "Palace", "Pants"
+, "Paper", "Paper", "Park", "Parody", "Party", "Password", "Pastry", "Pawn", "Pear", "Pen"
+, "Pencil", "Pendulum", "Penny", "Pepper", "Personal", "Philosopher", "Phone", "Photograph", "Piano", "Picnic"
+, "Pigpen", "Pillow", "Pilot", "Pinch", "Ping", "Pinwheel", "Pirate", "Plaid", "Plan", "Plank"
+, "Plate", "Platypus", "Playground", "Plow", "Plumber", "Pocket", "Poem", "Point", "Pole", "Pomp"
+, "Pong", "Pool", "Popsicle", "Population", "Portfolio", "Positive", "Post", "Princess", "Procrastinate", "Protestant"
+, "Psychologist", "Publisher", "Punk", "Puppet", "Puppy", "Push", "Puzzle", "Quarantine", "Queen", "Quicksand"
+, "Quiet", "Race", "Radio", "Raft", "Rag", "Rainbow", "Rainwater", "Random", "Ray", "Recycle"
+, "Red", "Regret", "Reimbursement", "Retaliate", "Rib", "Riddle", "Rim", "Rink", "Roller", "Room"
+, "Rose", "Round", "Roundabout", "Rung", "Runt", "Rut", "Sad", "Safe", "Salmon", "Salt"
+, "Sandbox", "Sandcastle", "Sandwich", "Sash", "Satellite", "Scar", "Scared", "School", "Scoundrel", "Scramble"
+, "Scuff", "Seashell", "Season", "Sentence", "Sequins", "Set", "Shaft", "Shallow", "Shampoo", "Shark"
+, "Sheep", "Sheets", "Sheriff", "Shipwreck", "Shirt", "Shoelace", "Short", "Shower", "Shrink", "Sick"
+, "Siesta", "Silhouette", "Singer", "Sip", "Skate", "Skating", "Ski", "Slam", "Sleep", "Sling"
+, "Slow", "Slump", "Smith", "Sneeze", "Snow", "Snuggle", "Song", "Space", "Spare", "Speakers"
+, "Spider", "Spit", "Sponge", "Spool", "Spoon", "Spring", "Sprinkler", "Spy", "Square", "Squint"
+, "Stairs", "Standing", "Star", "State", "Stick", "Stockholder", "Stoplight", "Stout", "Stove", "Stowaway"
+, "Straw", "Stream", "Streamline", "Stripe", "Student", "Sun", "Sunburn", "Sushi", "Swamp", "Swarm"
+, "Sweater", "Swimming", "Swing", "Tachometer", "Talk", "Taxi", "Teacher", "Teapot", "Teenager", "Telephone"
+, "Ten", "Tennis", "Thief", "Think", "Throne", "Through", "Thunder", "Tide", "Tiger", "Time"
+, "Tinting", "Tiptoe", "Tiptop", "Tired", "Tissue", "Toast", "Toilet", "Tool", "Toothbrush", "Tornado"
+, "Tournament", "Tractor", "Train", "Trash", "Treasure", "Tree", "Triangle", "Trip", "Truck", "Tub"
+, "Tuba", "Tutor", "Television", "Twang", "Twig", "Twitterpated", "Type", "Unemployed", "Upgrade", "Vest"
+, "Vision", "Wag", "Water", "Watermelon", "Wax", "Wedding", "Weed", "Welder", "Whatever", "Wheelchair"
+, "Whiplash", "Whisk", "Whistle", "White", "Wig", "Will", "Windmill", "Winter", "Wish", "Wolf"
+, "Wool", "World", "Worm", "Wristwatch", "Yardstick", "Zamboni", "Zen", "Zero", "Zipper", "Zone"
+, "Zoo"];
+
+//Variables used in sending 25 codewords to client
+var randNum= new Array(25);
+var noDuplicateCode= 1; 
+var colorGuessed= "";
+var num_guesses=0;
+var total_guesses=0;
+var revealed_red_count=0;
+var revealed_blue_count=0;
+var total_red= 8;
+var total_blue= 9; 
+
+
 app.get('/',function(req,res) {
     res.sendFile(__dirname + '/client/index.html');
 });
@@ -71,7 +153,6 @@ db.once('open', function() {
             //to be stored locally
             data.action = 'start';
             data.player = pid;
-    
             res.send(data);
         });
     });
@@ -79,55 +160,19 @@ db.once('open', function() {
     var SOCKET_LIST = {};
     var PLAYER_LIST = {};
     
-    var Player = function(id) {
-        var self = {
-            x:250,
-            y:250,
-            id:id,
-            number:"" + Math.floor(10 * Math.random()),
-            pressingRight:false,
-            pressingLeft:false,
-            pressingUp:false,
-            pressingDown:false,
-            maxSpd:10
-        }
-        self.updatePosition = function() {
-            if(self.pressingRight)
-                self.x += self.maxSpd;
-            if(self.pressingLeft)
-                self.x -= self.maxSpd;
-            if(self.pressingUp)
-                self.y -= self.maxSpd;
-            if(self.pressingDown)
-                self.y += self.maxSpd;
-        }
-        return self;
-    }
-    
     io.sockets.on('connection', function(socket){
         socket.id = Math.random();
         SOCKET_LIST[socket.id] = socket;
     
-        var player = Player(socket.id);
-        PLAYER_LIST[socket.id] = player;
+        //var player = Player(socket.id);
+        //PLAYER_LIST[socket.id] = player;
     
         socket.on('disconnect',function(){
             delete SOCKET_LIST[socket.id];
             delete PLAYER_LIST[socket.id];
         });
-    
-        socket.on('keyPress',function(data){
-            if(data.inputId === 'left')
-                player.pressingLeft = data.state;
-            else if(data.inputId === 'right')
-                player.pressingRight = data.state;
-            else if(data.inputId === 'up')
-                player.pressingUp = data.state;
-            else if(data.inputId === 'down')
-                player.pressingDown = data.state;
-        });
 
-        socket.on('createGame',function(data){
+        socket.on('createGame',function(){
             //TODO: implement
             myRoomName = randomString(8);
             //playerID = randomString(4);
@@ -137,14 +182,14 @@ db.once('open', function() {
                     roomID: myRoomName,
                     status: 'waiting',
                     numPlayers: 1,
-                    players: [{id: socket.id, team: "blue", role: "captain"}],
+                    players: [{id: socket.id, team: "blue"}],
                     //players: [playerID],
                     whoseTurn: "blue",
-                    words: ["mist", "slope", "line", "town", "order",
-                            "stitch", "camera", "brick", "channel", "cook",
-                            "lock", "things", "stretch", "butter", "root",
-                            "bead", "bell", "mountain", "income", "slave",
-                            "train", "cannon", "canvas", "dust", "humor"],
+                    words: ["", "", "", "", "",
+                            "", "", "", "", "",
+                            "", "", "", "", "",
+                            "", "", "", "", "",
+                            "", "", "", "", ""],
                     revealedWords: [0,0,0,0,0,
                                     0,0,0,0,0,
                                     0,0,0,0,0,
@@ -171,15 +216,20 @@ db.once('open', function() {
 
         socket.on('joinGame', function(data){
             //TODO: implement
+            if (data.roomName != myRoomName)
+            {
+                socket.emit('cannotJoinGame'); 
+            }
             socket.join(data.roomName, function(){
                 myRoom.findOne({roomID: data.roomName}).then(function(record){
                     //update numplayers and playerid array
                     record.numPlayers = record.numPlayers+1;
+                    //Player team assignment
                     if (record.players.length % 2 === 0) { //even 
-                        record.players.push({id: socket.id, team: "blue", role: "regular"});
+                        record.players.push({id: socket.id, team: "blue"});
                     }
                     else { //odd 
-                        record.players.push({id: socket.id, team: "red", role: "regular"});
+                        record.players.push({id: socket.id, team: "red"});
                     }
 
                     //game can start with 4 players
@@ -194,29 +244,147 @@ db.once('open', function() {
                         SOCKET_LIST[socket.id].emit('myroomjoined',record);
                         console.log('new client has joined game');
                     });
+
+                    //Sending 25 codewords to client
+                    var i=0; 
+                    var k=0;
+                    while(i<25){
+                        noDuplicateCode=1;
+                        randNum[i]= floor(math.random*codes.length); 
+                        if (i==0){  //Not possible to have duplicates when adding first codeword to array
+                            room.words[i]= codes[randNum[i]];
+                            i++;
+                        }
+                        else {
+                            for (k=0;k<=i-1; k++) {
+                                if (randNum[i]== randNum[k]){
+                                    noDuplicateCode=0; //Duplicate detected so do not add code word in this iteration
+                                    break;
+                                }
+                            }
+                            if(noDuplicateCode) {   //No duplicate so add codeword
+                                room.words[i]= codes[randNum[i]];
+                                i++;
+                            }
+                        } 
+                    }    
+                    socket.emit('receivedCodes', room.words);
                 });
             });
             //TODO: check for error here, if room doesn't exist
         });
+
+        //TODO: captainTurn socket sets num_guesses and total_guesses equal to whatever captain typed in 
+
+        socket.on('agentTurn', function(data) { //Call this function from frontend when Captain enters clue and hits submit
+            //Frontend needs to send a structure that holds the guessed word string and team color of player that
+            //guessed the word
+            if (data.team== "blue")
+            {
+                room.whoseTurn= "blue";
+            }
+            else if (data.team== "red")
+            {
+                room.whoseTurn= "red"; 
+            }
+            if (num_guesses== total_guesses) //At least one guess per turn is required
+            {
+                //TODO: Reveal to all players the word_guessed
+                for (var j=0; j<SOCKET_LIST.length; j++)
+                {
+                    socket.emit('guessedTiles', data.wordGuessed); //Display tiles to all players and gray out guessed tile
+                }
+                //Update revealedWords matrix and find color of word guessed
+                for (var k=0; k<25; k++)
+                {
+                    if (data.wordGuessed==room.words[k])
+                    {
+                        colorGuessed= room.colorWords[k];
+                        room.revealedWords[k]=1;
+                    }
+                }
+                //Make a decision based on the color of the word revealed
+                if (room.whoseTurn== colorGuessed) //Correct guess by agent
+                {
+                    num_guesses--; 
+                    if (room.whoseTurn== "blue")
+                    {
+                        revealed_blue_count++;
+                        if (revealed_blue_count==total_blue) //Check if blue team won
+                        {
+                            //Expectation for endGame from frontend: display who won and exit the game completely
+                             socket.emit('endGame', "blue"); //Blue team won
+                        }
+                    }
+                    else
+                    {
+                        revealed_red_count++;
+                        if (revealed_red_count== total_red)
+                        {
+                             socket.emit('endGame', "red"); //Red team n
+                        }
+                    }
+
+                }
+                else if (colorGuessed== "black") //Assassin tile
+                {
+                    if (room.whoseTurn== "red")
+                    {
+                        socket.emit('endGame', "blue"); //Blue team won
+                    }
+                    else
+                    {
+                        socket.emit('endGame', "red"); //Red team won
+                    }
+                }
+                else if (colorGuessed== "brown") //Neutral tile
+                {
+                    num_guesses=0; //Switch turns
+                }
+                else //Guessed opposing team's codeword 
+                {
+                    num_guesses=0; //Switch turns
+                    if (room.whoseTurn== "blue")
+                    {
+                        revealed_red_count++;
+                        if (revealed_red_count==total_red) //Check if red team won
+                        {
+                            socket.emit('endGame', "red"); //Red team won
+                        }
+                    }
+                    else
+                    {
+                        revealed_blue_count++;
+                        if (revealed_blue_count== total_blue) //Check if blue team won
+                        {
+                            socket.emit('endGame', "blue"); //Blue team won
+                        }
+                    }
+                }
+            }
+            else if (num_guesses!= total_guesses)
+            {
+                if (num_guesses==0 && (revealed_red_count != total_red && revealed_blue_count != total_blue)) //No more guesses and no winner
+                {
+                    //Switch turns
+                    if (room.whoseTurn== "red")
+                    {
+                        room.whoseTurn= "blue";
+                    }
+                    else
+                    {
+                        room.whoseTurn= "red";
+                    }
+                    scoket.emit('captainTurn', whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
+                }
+                else if (num_guesses>0 && (revealed_red_count != total_red && revealed_blue_count != total_blue))
+                {
+                    socket.emit('moreGuesses', whoseTurn); // TODO: Frontend asks user if they want to guess more
+                    //If they want to guess more, call agentTurn function again
+                    //If not,  call captainTurn function with appropriate team color
+                }
+            }
+        });
     });
-    
-    setInterval(() => {
-        var pack = [];
-        for(var i in PLAYER_LIST) {
-            var player = PLAYER_LIST[i];
-            player.updatePosition();
-            pack.push({
-                x:player.x,
-                y:player.y,
-                number:player.number
-            });
-        }
-        for(var i in SOCKET_LIST){
-            var socket = SOCKET_LIST[i];
-            socket.emit('newPositions',pack);
-        }
-    },1000/25);
-    
-    
 });
 
