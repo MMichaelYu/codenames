@@ -164,8 +164,8 @@ db.once('open', function() {
         socket.id = Math.random();
         SOCKET_LIST[socket.id] = socket;
     
-        var player = Player(socket.id);
-        PLAYER_LIST[socket.id] = player;
+        //var player = Player(socket.id);
+        //PLAYER_LIST[socket.id] = player;
     
         socket.on('disconnect',function(){
             delete SOCKET_LIST[socket.id];
