@@ -13,7 +13,6 @@
     </form>
     <button type="button" id="createbutton">Create game</button>
     <button type="button" id="joinbutton">Join game</button>
-    <canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -21,6 +20,8 @@
     <script src="https://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
     <script src="https://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
 
+
+    
     <script>
         var ctx = document.getElementById("ctx").getContext("2d");
         ctx.font = "30px Arial";
@@ -30,7 +31,8 @@
             ctx.clearRect(0, 0, 500, 500);
             for (var i = 0; i < data.length; i++)
                 ctx.fillText(data[i].number, data[i].x, data[i].y);
-        });
+				});
+	
 
         //TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
@@ -66,9 +68,114 @@
         //     }
         // });
 
-    
     </script>
+   <br>
+   <button id="0" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="1" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="2" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="3" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="4" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <br>
+    <button id="5" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="6" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="7" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="8" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="9" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <br>
+    <button id="10" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="11" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="12" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="13" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="14" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <br>
+    <button id="15" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="16" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="17" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="18" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="19" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <br>
+    <button id="20" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="21" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="22" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="23" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    <button id="24" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+    
+    <br>
+    <br>
+    <table border="3" width="150" height="100" style="text-align: center;">
+     <tr>
+	<td id="25"></td>
+	<td id="26"></td>
+	<td id="27"></td>
+	<td id="28"></td>
+	<td id="29"></td>
+     </tr>	
+     <tr>
+	<td id="30"></td>
+	<td id="31"></td>
+	<td id="32"></td>
+	<td id="33"></td>
+	<td id="34"></td>	
+     </tr>
+     <tr>
+	<td id="35"></td>
+	<td id="36"></td>
+	<td id="37"></td>
+	<td id="38"></td>
+	<td id="39"></td>	
+     </tr>
+     <tr>
+	<td id="40"></td>
+	<td id="41"></td>
+	<td id="42"></td>
+	<td id="43"></td>
+	<td id="44"></td>	
+     </tr>
+     <tr>
+	<td id="45"></td>
+	<td id="46"></td>
+	<td id="47"></td>
+	<td id="48"></td>
+	<td id="49"></td>	
+     </tr>      
+    </table>
 
+    <br>
+    <p>Enter your clue in the form: word number</p>
+    Clue: <input type="text" id="clue">    
+    <button onclick="getinputtext()">Submit</button>
+    <script>
+      function getinputtext() {
+      var fullclue = document.getElementById("clue").value;
+      var clueval = fullclue.substr(0, fullclue.length - 1);
+      var cluenum = Number(fullclue.substr(fullclue.length - 1));
+      document.getElementById("clue").value = "clueval is " + clueval + "cluenum is " + cluenum;
+      
+      }
+      var test = "testtest";
+      var colortouse = "#ff00ff";
+      var blue ="#0000ff";
+      var red = "#f00000";
+      var black = "#000000";
+      var brown = "#d2b48c";
+      var wordarray = ["house", "car", "yellow", "apple", "dice", "sandwich", "tree", "stoplight", "pillow", "horse", "spring", "street", "metal", "chair", "money", "juice", "book", "jacket", "police", "casino", "doctor", "seven", "parrot", "necklace", "sunflower"];
+      var revealedarray = [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0];
+      var colorarray = [red, red, blue, red, brown, brown, blue, red, red, blue, blue, brown, blue, brown, red, brown, red, red, blue, blue, blue, black, brown, blue, red];
+      for(i = 0; i < 25; i++) {
+      document.getElementById(i+25).style.backgroundColor = colorarray[i];
+      document.getElementById(i).innerHTML = wordarray[i];
+      if(revealedarray[i]) {
+      document.getElementById(i).style.backgroundColor = colorarray[i];
+      document.getElementById(i).style.fontWeight = "800"; }
+      }
+      function checkword(word_id) {
+	revealedarray[word_id] = 1;
+	document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
+        document.getElementById(word_id).style.fontWeight = "800";   
+		     }
+		     
+    </script>
+    
 </body>
 
 </html>
