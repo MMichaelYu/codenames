@@ -270,7 +270,6 @@ db.once('open', function() {
                         } 
                     }    
                     socket.emit('receivedCodes', room.words);
-                    //TODO: send to just the captain? Check which socket its saved in later
                 });
             });
             //TODO: check for error here, if room doesn't exist
@@ -280,35 +279,31 @@ db.once('open', function() {
 
         //Captains word input, just sends to everyone, frontend displays to everyone?
         socket.on('captainClueWord',function(data){
-            for(var i in SOCKET_LIST){
-                var socket = SOCKET_LIST[i];
-                socket.emit('clue',data);
+            for(var j in myRoom.players){
+                SOCKET_LIST[j.id].emit('clue',data)
             }
         });
 
         //Captains number input, just sends to everyone, frontend displays to everyone?
         socket.on('captainClueNumber',function(data){
-            for(var i in SOCKET_LIST){
-                var socket = SOCKET_LIST[i];
-                socket.emit('number',data);
+            for(var j in myRoom.players){
+                SOCKET_LIST[j.id].emit('number',data)
             }
             num_guesses = data;
             total_guesses = data; 
         });
-
+        
         //Responce to frontend saying to not make more guesses
         socket.on('captainSwap',function(data){
         if (room.whoseTurn == "blue")
         {
             room.whoseTurn = "red";
-            var socket = SOCKET_LIST[1];
-            socket.emit('captainTurn', room.whoseTurn);
+            SOCKET_LIST[1].emit('captainTurn', room.whoseTurn);
         }
         else
         {
             room.whoseTurn = "blue";
-            var socket = SOCKET_LIST[0];
-            socket.emit('captainTurn', room.whoseTurn);
+            SOCKET_LIST[0].emit('captainTurn', room.whoseTurn);
         }
         //TODO: send to just the captain? Check which socket its saved in later
         
