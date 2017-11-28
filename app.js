@@ -237,6 +237,17 @@ db.once('open', function() {
                     //check for 4 players and change status if needed
                     if (record.numPlayers === 4) {
                         record.status = 'starting';
+                        for(var j in myRoom.players){
+                            if (j == 0) {
+                                SOCKET_LIST[0].emit('role',"blue captain"); }
+                            if (j == 1) {
+                                SOCKET_LIST[1].emit('role',"red captain"); }
+                            if (j == 2) {
+                                SOCKET_LIST[2].emit('role',"blue team member"); }
+                            if (j == 3) {
+                                SOCKET_LIST[3].emit('role',"red team member"); }
+                            
+                        } 
                     }
 
                     //save to database
@@ -289,8 +300,8 @@ db.once('open', function() {
             for(var j in myRoom.players){
                 SOCKET_LIST[j.id].emit('number',data)
             }
-            num_guesses = data;
-            total_guesses = data; 
+            room.num_guesses = data;
+            room.total_guesses = data; 
         });
         
         //Responce to frontend saying to not make more guesses
