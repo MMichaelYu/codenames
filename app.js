@@ -375,7 +375,7 @@ db.once('open', function() {
                     {
                         room.whoseTurn= "red";
                     }
-                    scoket.emit('captainTurn', whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
+                    socket.emit('captainTurn', whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
                 }
                 else if (num_guesses>0 && (revealed_red_count != total_red && revealed_blue_count != total_blue))
                 {
