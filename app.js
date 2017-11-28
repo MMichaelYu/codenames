@@ -271,7 +271,6 @@ db.once('open', function() {
                     }    
                     socket.emit('receivedCodes', room.words);
                     //TODO: send to just the captain? Check which socket its saved in later
-                    socket.emit('captainTurn', room.whoseTurn);
                 });
             });
             //TODO: check for error here, if room doesn't exist
@@ -302,13 +301,17 @@ db.once('open', function() {
         if (room.whoseTurn == "blue")
         {
             room.whoseTurn = "red";
+            var socket = SOCKET_LIST[1];
+            socket.emit('captainTurn', room.whoseTurn);
         }
         else
         {
             room.whoseTurn = "blue";
+            var socket = SOCKET_LIST[0];
+            socket.emit('captainTurn', room.whoseTurn);
         }
         //TODO: send to just the captain? Check which socket its saved in later
-        socket.emit('captainTurn', room.whoseTurn);
+        
 
         });
 
