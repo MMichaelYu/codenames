@@ -21,7 +21,12 @@ const myRoomSchema = new Schema({
     //0 is unrevealed, 1 is revealed 
     revealedWords: [Boolean],
     //blue/red/black/brown
-    colorWords: [String]
+    colorWords: [String],
+    revealed_red_count: Number,
+    revealed_blue_count: Number,
+    colorGuessed:String,
+    num_guesses: Number,
+    total_guesses: Number
     //25-array tuples of word,color,isitrevealed yet
 });
 
