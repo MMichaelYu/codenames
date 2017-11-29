@@ -74,7 +74,6 @@ var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alli
     , "Wool", "World", "Worm", "Wristwatch", "Yardstick", "Zamboni", "Zen", "Zero", "Zipper", "Zone"
     , "Zoo"];
 
-
 var total_red = 8;
 var total_blue = 9;
 
@@ -157,8 +156,8 @@ db.once('open', function () {
         socket.id = Math.random();
         SOCKET_LIST[socket.id] = socket;
 
-        var player = Player(socket.id);
-        PLAYER_LIST[socket.id] = player;
+        //var player = Player(socket.id);
+        //PLAYER_LIST[socket.id] = player;
 
         socket.on('disconnect', function () {
             delete SOCKET_LIST[socket.id];
@@ -208,7 +207,7 @@ db.once('open', function () {
                 var k = 0;
                 while (i < 25) {
                     noDuplicateCode = 1;
-                    randNum[i] = floor(math.random * codes.length);
+                    randNum[i] = Math.floor(Math.random * codes.length);
                     if (i == 0) {  //Not possible to have duplicates when adding first codeword to array
                         room.words[i] = codes[randNum[i]];
                         i++;
@@ -259,6 +258,21 @@ db.once('open', function () {
                     //check for 4 players and change status if needed
                     if (record.numPlayers === 4) {
                         record.status = 'starting';
+                        for (var j in myRoom.players) {
+                            if (j == 0) {
+                                SOCKET_LIST[0].emit('role', "blue captain");
+                            }
+                            if (j == 1) {
+                                SOCKET_LIST[1].emit('role', "red captain");
+                            }
+                            if (j == 2) {
+                                SOCKET_LIST[2].emit('role', "blue team member");
+                            }
+                            if (j == 3) {
+                                SOCKET_LIST[3].emit('role', "red team member");
+                            }
+
+                        }
                     }
 
                     //save to database
@@ -270,6 +284,36 @@ db.once('open', function () {
                 });
             });
             //TODO: check for error here, if room doesn't exist
+        });
+
+
+        //Captains word input, just sends to everyone, frontend displays to everyone?
+        socket.on('captainClueWord', function (data) {
+            for (var j in myRoom.players) {
+                SOCKET_LIST[j.id].emit('clue', data)
+            }
+        });
+
+        //Captains number input, just sends to everyone, frontend displays to everyone?
+        socket.on('captainClueNumber', function (data) {
+            for (var j in myRoom.players) {
+                SOCKET_LIST[j.id].emit('number', data)
+            }
+            room.num_guesses = data;
+            room.total_guesses = data;
+        });
+
+        //Responce to frontend saying to not make more guesses
+        socket.on('captainSwap', function (data) {
+            if (room.whoseTurn == "blue") {
+                room.whoseTurn = "red";
+                SOCKET_LIST[1].emit('captainTurn', room.whoseTurn);
+            }
+            else {
+                room.whoseTurn = "blue";
+                SOCKET_LIST[0].emit('captainTurn', room.whoseTurn);
+            }
+            //TODO: send to just the captain? Check which socket its saved in later
         });
 
         //TODO: captainTurn socket sets num_guesses and total_guesses equal to whatever captain typed in 
@@ -327,7 +371,6 @@ db.once('open', function () {
                                 }
                             }
                         }
-
                     }
                     else if (room.colorGuessed == "black") //Assassin tile
                     {
@@ -398,4 +441,3 @@ db.once('open', function () {
         });
     });
 });
-
