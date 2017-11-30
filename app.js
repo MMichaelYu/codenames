@@ -178,11 +178,11 @@ db.once('open', function () {
                     players: [{ id: socket.id, team: "blue" }],
                     //players: [playerID],
                     whoseTurn: "blue",
-                    words: ["", "", "", "", "",
-                        "", "", "", "", "",
-                        "", "", "", "", "",
-                        "", "", "", "", "",
-                        "", "", "", "", ""],
+                    // words: ["", "", "", "", "",
+                    //     "", "", "", "", "",
+                    //     "", "", "", "", "",
+                    //     "", "", "", "", "",
+                    //     "", "", "", "", ""],
                     revealedWords: [0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0,
@@ -207,7 +207,8 @@ db.once('open', function () {
                 var k = 0;
                 while (i < 25) {
                     noDuplicateCode = 1;
-                    randNum[i] = Math.floor(Math.random * codes.length);
+                    randNum[i] = Math.floor(Math.random() * codes.length);
+                    //console.log(Math.random());
                     if (i == 0) {  //Not possible to have duplicates when adding first codeword to array
                         room.words[i] = codes[randNum[i]];
                         i++;
@@ -225,7 +226,7 @@ db.once('open', function () {
                         }
                     }
                 }
-
+                //console.log(room.words);
                 //Save to mongoDB
                 room.save().then(function () {
                     //Tell client info about roomID, playerID, and the game through the room object
