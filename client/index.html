@@ -7,6 +7,9 @@
 </head>
 
 <body>
+    <span id="myspan"> You don't have a role yet! </span>
+    <br>
+    <span id="roomspan"> You don't have a room yet! </span>
     <form>
         <div id="gamesetup" style="display:block">
             Room:
@@ -136,12 +139,23 @@
                     document.getElementById(i).style.fontWeight = "800";
                 }
             }
-            // socket.on('checkword', (word_id) => {
-            //     revealedarray[word_id] = 1;
-            //     document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
-            //     document.getElementById(word_id).style.fontWeight = "800";
-            // });
-
+            //tell player their roomID
+            document.getElementById("roomspan").textContent="RoomID: " + myroomID;
+            //tell player their role
+            if ((data.players.length - 1) === 0) {
+                document.getElementById("myspan").textContent="Blue Spy Master";
+            }
+            else if ((data.players.length - 1) === 1) {
+                document.getElementById("myspan").textContent="Red Spy Master";
+            }
+            //even index = blue player
+            else if ((data.players.length - 1) % 2 === 0) {
+                document.getElementById("myspan").textContent="Blue Member";
+            }
+            //odd index = red player
+            else if ((data.players.length - 1) % 2 === 1) {
+                document.getElementById("myspan").textContent="Red Member";
+            }
         });
 
         socket.on('connect', function () {
@@ -175,15 +189,11 @@
         }
 
         function checkword(word_id) {
-            //socket.emit('checkword', word_id);
             revealedarray[word_id] = 1;
             document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
             document.getElementById(word_id).style.fontWeight = "800";
         }
 
-
     </script>
-
 </body>
-
 </html>
