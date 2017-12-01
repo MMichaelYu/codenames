@@ -112,6 +112,7 @@
         console.log("socket made");
         var revealedarray;
         var colorarray;
+        var myroomID;
         //TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
@@ -119,7 +120,7 @@
             console.log('myplayerID:' + data.players[data.players.length - 1].id);
             console.log(data.words);
             //send myroomID every time emitting to server
-            var myroomID = data.roomID;
+            myroomID = data.roomID;
             //game starts here
             //put more socket events in this block
             var test = "testtest";
@@ -181,11 +182,8 @@
         }
 
         function startfunc(button) {
-            var x = document.getElementById("gametable");
-            x.style.display = "block";
-            button.style.visibility = "hidden";
-            var y = document.getElementById("gamesetup");
-            y.style.display = "none";
+            socket.emit('startgame', { roomName: myroomID });
+            console.log('emit startgame');
         }
 
         function checkword(word_id) {
@@ -194,6 +192,17 @@
             document.getElementById(word_id).style.fontWeight = "800";
         }
 
+        socket.on('everyonestart', function() {
+            var x = document.getElementById("gametable");
+            x.style.display = "block";
+            document.getElementById("startbutton").style.visibility = "hidden";
+            var y = document.getElementById("gamesetup");
+            y.style.display = "none";
+        });
+
+        socket.on('test', function() {
+            console.log('test worked');
+        });
     </script>
 </body>
 </html>

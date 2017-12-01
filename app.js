@@ -99,19 +99,6 @@ db.once('open', function () {
     serv.listen(process.env.PORT || 5000);
     console.log("Server started.");
 
-    mongoose.Schema({
-        room: { type: String, index: true },
-        status: String,
-        numPlayers: Number,
-
-        players: [mongoose.Schema({
-            id: String,
-            name: String,
-            status: String
-        }, { _id: false })]
-    });
-
-
     app.post('/start', function (req, res) {
         var room = randomString(8);
         var pid = randomString(4);
@@ -244,6 +231,7 @@ db.once('open', function () {
                 socket.emit('cannotJoinGame');
             }
             socket.join(data.roomName, function () {
+                io.in(data.roomName).emit('test');
                 myRoom.findOne({ roomID: data.roomName }).then(function (record) {
                     //update numplayers and playerid array
                     record.numPlayers = record.numPlayers + 1;
@@ -255,25 +243,26 @@ db.once('open', function () {
                         record.players.push({ id: socket.id, team: "red" });
                     }
 
+                    //SOCKET_LIST[record.players[0].id].emit('test');
                     //game can start with 4 players
                     //check for 4 players and change status if needed
                     if (record.numPlayers === 4) {
                         record.status = 'starting';
-                        for (var j in myRoom.players) {
-                            if (j == 0) {
-                                SOCKET_LIST[0].emit('role', "blue captain");
-                            }
-                            if (j == 1) {
-                                SOCKET_LIST[1].emit('role', "red captain");
-                            }
-                            if (j == 2) {
-                                SOCKET_LIST[2].emit('role', "blue team member");
-                            }
-                            if (j == 3) {
-                                SOCKET_LIST[3].emit('role', "red team member");
-                            }
+                        // for (var j in myRoom.players) {
+                        //     if (j == 0) {
+                        //         SOCKET_LIST[0].emit('role', "blue captain");
+                        //     }
+                        //     if (j == 1) {
+                        //         SOCKET_LIST[1].emit('role', "red captain");
+                        //     }
+                        //     if (j == 2) {
+                        //         SOCKET_LIST[2].emit('role', "blue team member");
+                        //     }
+                        //     if (j == 3) {
+                        //         SOCKET_LIST[3].emit('role', "red team member");
+                        //     }
 
-                        }
+                        // }
                     }
 
                     //save to database
@@ -287,6 +276,27 @@ db.once('open', function () {
             //TODO: check for error here, if room doesn't exist
         });
 
+        socket.on('startgame', (data) => {
+            console.log('try to startgame');
+            myRoom.findOne({ roomID: data.roomName}).then(function(result){
+                //tell all other players to start if players >= 4
+                if (result.status === 'starting') {
+                    console.log('game is starting confirmed');
+                    for (var j = 0; j < result.players.length; j++) {
+                        SOCKET_LIST[result.players[j].id].emit('everyonestart');
+                        //SOCKET_LIST[result.players[j].id].emit('test');
+                        console.log('emitted');
+                    }
+                    result.status = 'in-progress';
+                }
+                else {
+                    console.log('game is not starting confirmed');
+                }
+                //save updated game status 
+                result.save().then(function(){ });
+
+            });
+        });
 
         //Captains word input, just sends to everyone, frontend displays to everyone?
         socket.on('captainClueWord', function (data) {
