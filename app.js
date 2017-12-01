@@ -4,7 +4,6 @@ var serv = require('http').Server(app);
 var io = require('socket.io')(serv, {});
 const myRoom = require('./models/myRoom.js');
 
-
 var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
     , "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
     , "Athlete", "Atlantis", "Aunt", "Avocado", "Baby-Sitter", "Backbone", "Bag", "Baguette", "Bald", "Balloon"
@@ -137,24 +136,18 @@ db.once('open', function () {
     });
 
     var SOCKET_LIST = {};
-    var PLAYER_LIST = {};
 
     io.sockets.on('connection', function (socket) {
         socket.id = Math.random();
         SOCKET_LIST[socket.id] = socket;
 
-        //var player = Player(socket.id);
-        //PLAYER_LIST[socket.id] = player;
-
         socket.on('disconnect', function () {
             delete SOCKET_LIST[socket.id];
-            delete PLAYER_LIST[socket.id];
         });
 
         socket.on('createGame', function () {
             var randNum = new Array(25);
             myRoomName = randomString(8);
-            //playerID = randomString(4);
 
             socket.join(myRoomName, function () {
                 //Create default room
@@ -163,13 +156,7 @@ db.once('open', function () {
                     status: 'waiting',
                     numPlayers: 1,
                     players: [{ id: socket.id, team: "blue" }],
-                    //players: [playerID],
                     whoseTurn: "blue",
-                    // words: ["", "", "", "", "",
-                    //     "", "", "", "", "",
-                    //     "", "", "", "", "",
-                    //     "", "", "", "", "",
-                    //     "", "", "", "", ""],
                     revealedWords: [0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0,
@@ -187,15 +174,13 @@ db.once('open', function () {
                     total_guesses: 0
                 });
 
-
-                //Sending 25 codewords to client
+                //generating 25 codewords for game object
                 var noDuplicateCode = 1;
                 var i = 0;
                 var k = 0;
                 while (i < 25) {
                     noDuplicateCode = 1;
                     randNum[i] = Math.floor(Math.random() * codes.length);
-                    //console.log(Math.random());
                     if (i == 0) {  //Not possible to have duplicates when adding first codeword to array
                         room.words[i] = codes[randNum[i]];
                         i++;
@@ -213,13 +198,10 @@ db.once('open', function () {
                         }
                     }
                 }
-                //console.log(room.words);
                 //Save to mongoDB
                 room.save().then(function () {
                     //Tell client info about roomID, playerID, and the game through the room object
                     SOCKET_LIST[socket.id].emit('myroomjoined', room);
-                    //io.in("default").emit('myroomjoined', room);
-                    //console.log("now in rooms", socket.rooms);
                     console.log('socket has created a game');
                 });
             });
@@ -231,7 +213,6 @@ db.once('open', function () {
                 socket.emit('cannotJoinGame');
             }
             socket.join(data.roomName, function () {
-                io.in(data.roomName).emit('test');
                 myRoom.findOne({ roomID: data.roomName }).then(function (record) {
                     //update numplayers and playerid array
                     record.numPlayers = record.numPlayers + 1;
@@ -243,26 +224,10 @@ db.once('open', function () {
                         record.players.push({ id: socket.id, team: "red" });
                     }
 
-                    //SOCKET_LIST[record.players[0].id].emit('test');
                     //game can start with 4 players
                     //check for 4 players and change status if needed
                     if (record.numPlayers === 4) {
                         record.status = 'starting';
-                        // for (var j in myRoom.players) {
-                        //     if (j == 0) {
-                        //         SOCKET_LIST[0].emit('role', "blue captain");
-                        //     }
-                        //     if (j == 1) {
-                        //         SOCKET_LIST[1].emit('role', "red captain");
-                        //     }
-                        //     if (j == 2) {
-                        //         SOCKET_LIST[2].emit('role', "blue team member");
-                        //     }
-                        //     if (j == 3) {
-                        //         SOCKET_LIST[3].emit('role', "red team member");
-                        //     }
-
-                        // }
                     }
 
                     //save to database
@@ -284,8 +249,6 @@ db.once('open', function () {
                     console.log('game is starting confirmed');
                     for (var j = 0; j < result.players.length; j++) {
                         SOCKET_LIST[result.players[j].id].emit('everyonestart');
-                        //SOCKET_LIST[result.players[j].id].emit('test');
-                        console.log('emitted');
                     }
                     result.status = 'in-progress';
                 }
