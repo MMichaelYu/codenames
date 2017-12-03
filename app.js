@@ -322,9 +322,10 @@ db.once('open', function () {
                 if (room.num_guesses == room.total_guesses) //At least one guess per turn is required
                 {
                     //Reveal to all players the word_guessed
-                    for (var j in room.players) {
-                        SOCKET_LIST[j.id].emit('guessedTiles', data.wordGuessed); //Display tiles to all players and gray out guessed tile
-                    }
+                    for (var j = 0; j < room.players.length; j++) {
+                        SOCKET_LIST[room.players[j].id].emit('guessedTiles', data.wordGuessed);
+                    } //Display tiles to all players and gray out guessed tile
+
                     //Update revealedWords matrix and find color of word guessed
                     for (var k = 0; k < 25; k++) {
                         if (data.wordGuessed == room.words[k]) {
@@ -340,17 +341,18 @@ db.once('open', function () {
                             room.revealed_blue_count++;
                             if (room.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j in room.players) {
+                                for (var j = 0; j < room.players.length; j++) {
                                     //Expectation for endGame from frontend: display who won and exit the game completely
-                                    SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won  
+                                    SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
                                 }
                             }
                         }
                         else {
                             room.revealed_red_count++;
                             if (room.revealed_red_count == total_red) {
-                                for (var j in room.players) {
-                                    SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
+                                //red team wins
+                                for (var j = 0; j < room.players.length; j++) {
+                                    SOCKET_LIST[room.players[j].id].emit('endGame', "red");
                                 }
                             }
                         }
@@ -358,13 +360,15 @@ db.once('open', function () {
                     else if (room.colorGuessed == "black") //Assassin tile
                     {
                         if (room.whoseTurn == "red") {
-                            for (var j in room.players) {
-                                SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won
+                            //blue team won
+                            for (var j = 0; j < room.players.length; j++) {
+                                SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
                             }
                         }
                         else {
-                            for (var j in room.players) {
-                                SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
+                            //red team won
+                            for (var j = 0; j < room.players.length; j++) {
+                                SOCKET_LIST[room.players[j].id].emit('endGame', "red");
                             }
                         }
                     }
@@ -379,8 +383,8 @@ db.once('open', function () {
                             room.revealed_red_count++;
                             if (room.revealed_red_count == total_red) //Check if red team won
                             {
-                                for (var j in room.players) {
-                                    SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
+                                for (var j = 0; j < room.players.length; j++) {
+                                    SOCKET_LIST[room.players[j].id].emit('endGame', "red");
                                 }
                             }
                         }
@@ -388,9 +392,8 @@ db.once('open', function () {
                             room.revealed_blue_count++;
                             if (room.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j in room.players) {
-
-                                    SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won
+                                for (var j = 0; j < room.players.length; j++) {
+                                    SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
                                 }
                             }
                         }
@@ -409,18 +412,20 @@ db.once('open', function () {
                         socket.emit('captainTurn', room.whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
                     }
                     else if (room.num_guesses > 0 && (room.revealed_red_count != total_red && room.revealed_blue_count != total_blue)) {
-                        for (var j in room.players) {
-                            SOCKET_LIST[j.id].emit('moreGuesses', room.whoseTurn); // TODO: Frontend asks user if they want to guess more
+                        for (var j = 0; j < room.players.length; j++) {
+                            SOCKET_LIST[room.players[j].id].emit('moreGuesses', room.whoseTurn); 
+                            // TODO: Frontend asks user if they want to guess more
                             //If they want to guess more, call agentTurn function again
                             //If not,  call captainTurn function with appropriate team color
                         }
                     }
                 }
+                room.save().then(function () { });
             });
             //Saving test
             //Describe tests
             //Create tests
-            myRoom.save().then(function () { });
+            //myRoom.save().then(function () { });
         });
     });
 });
