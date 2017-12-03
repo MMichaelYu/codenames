@@ -277,8 +277,8 @@ db.once('open', function () {
                     for (var j = 0; j < result.players.length; j++) {
                         SOCKET_LIST[result.players[j].id].emit('clue',data.number);
                     }         
-                    room.num_guesses = data.number;
-                    room.total_guesses = data.number;
+                    result.num_guesses = data.number;
+                    result.total_guesses = data.number;
                     result.save().then(function(){ });
                 });
         });
@@ -286,13 +286,13 @@ db.once('open', function () {
         //Responce to frontend saying to not make more guesses
         socket.on('captainSwap', function (data) {
             myRoom.findOne({ roomID: data.roomName}).then(function(result){
-                if (room.whoseTurn == "blue") {
-                    room.whoseTurn = "red";
-                    SOCKET_LIST[result.players[1].id].emit('captainTurn', room.whoseTurn);
+                if (result.whoseTurn == "blue") {
+                    result.whoseTurn = "red";
+                    SOCKET_LIST[result.players[1].id].emit('captainTurn', result.whoseTurn);
                 }
                 else {
-                    room.whoseTurn = "blue";
-                    SOCKET_LIST[result.players[0].id].emit('captainTurn', room.whoseTurn);
+                    result.whoseTurn = "blue";
+                    SOCKET_LIST[result.players[0].id].emit('captainTurn', result.whoseTurn);
                 }
                 result.save().then(function(){ });
             });
@@ -311,7 +311,7 @@ db.once('open', function () {
             //Finds all records of myRoom
             //myRoom.find({})
 
-            myRoom.findOne({ roomID: data.myRoomName }).then(function (myRoom) {
+            myRoom.findOne({ roomID: data.myRoomName }).then(function (room) {
                 //Implementation of game logic 
                 if (data.team == "blue") {
                     room.whoseTurn = "blue";
@@ -322,7 +322,7 @@ db.once('open', function () {
                 if (room.num_guesses == room.total_guesses) //At least one guess per turn is required
                 {
                     //Reveal to all players the word_guessed
-                    for (var j in myRoom.players) {
+                    for (var j in room.players) {
                         SOCKET_LIST[j.id].emit('guessedTiles', data.wordGuessed); //Display tiles to all players and gray out guessed tile
                     }
                     //Update revealedWords matrix and find color of word guessed
@@ -340,7 +340,7 @@ db.once('open', function () {
                             room.revealed_blue_count++;
                             if (room.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j in myRoom.players) {
+                                for (var j in room.players) {
                                     //Expectation for endGame from frontend: display who won and exit the game completely
                                     SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won  
                                 }
@@ -349,7 +349,7 @@ db.once('open', function () {
                         else {
                             room.revealed_red_count++;
                             if (room.revealed_red_count == total_red) {
-                                for (var j in myRoom.players) {
+                                for (var j in room.players) {
                                     SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
                                 }
                             }
@@ -358,12 +358,12 @@ db.once('open', function () {
                     else if (room.colorGuessed == "black") //Assassin tile
                     {
                         if (room.whoseTurn == "red") {
-                            for (var j in myRoom.players) {
+                            for (var j in room.players) {
                                 SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won
                             }
                         }
                         else {
-                            for (var j in myRoom.players) {
+                            for (var j in room.players) {
                                 SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
                             }
                         }
@@ -379,7 +379,7 @@ db.once('open', function () {
                             room.revealed_red_count++;
                             if (room.revealed_red_count == total_red) //Check if red team won
                             {
-                                for (var j in myRoom.players) {
+                                for (var j in room.players) {
                                     SOCKET_LIST[j.id].emit('endGame', "red"); //Red team won
                                 }
                             }
@@ -388,7 +388,7 @@ db.once('open', function () {
                             room.revealed_blue_count++;
                             if (room.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j in myRoom.players) {
+                                for (var j in room.players) {
 
                                     SOCKET_LIST[j.id].emit('endGame', "blue"); //Blue team won
                                 }
@@ -409,7 +409,7 @@ db.once('open', function () {
                         socket.emit('captainTurn', room.whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
                     }
                     else if (room.num_guesses > 0 && (room.revealed_red_count != total_red && room.revealed_blue_count != total_blue)) {
-                        for (var j in myRoom.players) {
+                        for (var j in room.players) {
                             SOCKET_LIST[j.id].emit('moreGuesses', room.whoseTurn); // TODO: Frontend asks user if they want to guess more
                             //If they want to guess more, call agentTurn function again
                             //If not,  call captainTurn function with appropriate team color
