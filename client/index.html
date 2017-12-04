@@ -216,7 +216,6 @@
         }
         function checkword(word_id) {
             if (revealedarray[word_id] == 0) {
-                revealedarray[word_id] = 1;
                 socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
             }
         }
