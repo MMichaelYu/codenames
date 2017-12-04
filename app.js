@@ -333,7 +333,6 @@ db.once('open', function () {
                 if (data.teamColor == result.whoseTurn) {
                     if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
                     {
-                        console.log(data.wordGuessed);
                         //Reveal to all players the word_guessed
                         for (var j = 0; j < result.players.length; j++) {
                             SOCKET_LIST[result.players[j].id].emit('guessedTiles', data.wordGuessed);

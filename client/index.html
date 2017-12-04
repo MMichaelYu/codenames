@@ -217,9 +217,6 @@
         function checkword(word_id) {
             if (revealedarray[word_id] == 0) {
                 revealedarray[word_id] = 1;
-                document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
-                document.getElementById(word_id).style.fontWeight = "800";
-                //console.log(wordarray[word_id]);
                 socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
             }
         }
