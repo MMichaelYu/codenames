@@ -246,14 +246,14 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.roomName }).then(function (result) {
                 //tell all other players to start if players >= 4
                 if (result.status === 'starting') {
-                    console.log('game is starting confirmed');
+                    //console.log('game is starting confirmed');
                     for (var j = 0; j < result.players.length; j++) {
                         SOCKET_LIST[result.players[j].id].emit('everyonestart');
                     }
                     result.status = 'in-progress';
                 }
                 else {
-                    console.log('game is not starting confirmed');
+                    //console.log('game is not starting confirmed');
                 }
                 //save updated game status 
                 result.save().then(function () { });
@@ -267,6 +267,7 @@ db.once('open', function () {
                 if (data.teamColor == result.whoseTurn) {
                     for (var j = 0; j < result.players.length; j++) {
                         SOCKET_LIST[result.players[j].id].emit('clue', data.clue);
+                        SOCKET_LIST[result.players[j].id].emit('updatePrompt', result.whoseTurn);
                     }
                 }
                 result.save().then(function () { });
@@ -322,7 +323,7 @@ db.once('open', function () {
             //guessed the word
             //Send room id from front end as well 
 
-
+            console.log('agentTurn began');
             //Create tests
             //Finds all records of myRoom
             //myRoom.find({})
@@ -332,6 +333,7 @@ db.once('open', function () {
                 if (data.teamColor == result.whoseTurn) {
                     if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
                     {
+                        console.log(data.wordGuessed);
                         //Reveal to all players the word_guessed
                         for (var j = 0; j < result.players.length; j++) {
                             SOCKET_LIST[result.players[j].id].emit('guessedTiles', data.wordGuessed);
@@ -442,10 +444,6 @@ db.once('open', function () {
                 }
                 result.save().then(function () { });
             });
-            //Saving test
-            //Describe tests
-            //Create tests
-            //myRoom.save().then(function () { });
         });
     });
 });

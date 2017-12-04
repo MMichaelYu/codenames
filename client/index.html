@@ -131,21 +131,21 @@
         var myroomID;
         var teamColor;
         var wordarray;
+        var colortouse = "#ff00ff";
+        var blue = "#0000ff";
+        var red = "#f00000";
+        var black = "#000000";
+        var brown = "#d2b48c";
         //TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
             console.log('roomID:' + data.roomID);
             console.log('myplayerID:' + data.players[data.players.length - 1].id);
-            console.log(data.words);
             //send myroomID every time emitting to server
             myroomID = data.roomID;
             //game starts here
             //put more socket events in this block
-            var colortouse = "#ff00ff";
-            var blue = "#0000ff";
-            var red = "#f00000";
-            var black = "#000000";
-            var brown = "#d2b48c";
+
             wordarray = data.words;
             revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             colorarray = [blue, red, black, brown, brown,
@@ -196,12 +196,10 @@
         socket.on('connect', function () {
             console.log("socket connected");
             document.getElementById("createbutton").addEventListener("click", function () {
-                console.log("buttonpress");
                 socket.emit("createGame");
             });
             document.getElementById("joinbutton").addEventListener("click", function () {
                 roomname = document.getElementById("roomname").value;
-                console.log(roomname);
                 socket.emit('joinGame', { roomName: roomname });
             });
             //Implement cannotJoinGame function
@@ -210,20 +208,19 @@
             var fullclue = document.getElementById("clue").value;
             var clueval = fullclue.substr(0, fullclue.length - 1);
             var cluenum = Number(fullclue.substr(fullclue.length - 1));
-            console.log(clueval);
             socket.emit('captainClueWord', { roomName: myroomID, clue: clueval, teamColor: teamColor });
             socket.emit('captainClueNumber', { roomName: myroomID, number: cluenum, teamColor: teamColor });
         }
         function startfunc(button) {
             socket.emit('startgame', { roomName: myroomID });
-            console.log('emit startgame');
         }
         function checkword(word_id) {
             if (revealedarray[word_id] == 0) {
                 revealedarray[word_id] = 1;
                 document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
                 document.getElementById(word_id).style.fontWeight = "800";
-                socket.emit('agentTurn', { roomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
+                //console.log(wordarray[word_id]);
+                socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
             }
         }
         socket.on('everyonestart', function () {
@@ -259,7 +256,14 @@
             }
         });
 
-
+        socket.on('updatePrompt', function(data) {
+            if (data == 'blue') {
+                document.getElementById("turnspan").textContent = "Blue Member's Turn: Click on a tile to guess that word";
+            }
+            else if (data == 'red') {
+                document.getElementById("turnspan").textContent = "Red Member's Turn: Click on a tile to guess that word";
+            }
+        });
 
     </script>
 </body>
