@@ -273,12 +273,12 @@ db.once('open', function () {
 
         //Captains number input, just sends to everyone, frontend displays to everyone?
         socket.on('captainClueNumber', function (data) {
-            myRoom.findOne({ roomID: data.roomName}).then(function(result){    
-                    for (var j = 0; j < result.players.length; j++) {
-                        SOCKET_LIST[result.players[j].id].emit('clue',data.number);
-                    }         
+            myRoom.findOne({ roomID: data.roomName}).then(function(result){   
                     result.num_guesses = data.number;
                     result.total_guesses = data.number;
+                    for (var j = 0; j < result.players.length; j++) {
+                        SOCKET_LIST[result.players[j].id].emit('number',data.number);
+                    }         
                     result.save().then(function(){ });
                 });
         });
@@ -288,15 +288,25 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.roomName}).then(function(result){
                 if (result.whoseTurn == "blue") {
                     result.whoseTurn = "red";
-                    SOCKET_LIST[result.players[1].id].emit('captainTurn', result.whoseTurn);
+                    SOCKET_LIST[result.players[1].id].emit('giveClue', result.whoseTurn);
                 }
                 else {
                     result.whoseTurn = "blue";
-                    SOCKET_LIST[result.players[0].id].emit('captainTurn', result.whoseTurn);
+                    SOCKET_LIST[result.players[0].id].emit('giveClue', result.whoseTurn);
                 }
                 result.save().then(function(){ });
             });
                 //TODO: send to just the captain? Check which socket its saved in later
+        });
+
+        socket.on('askForClue', function (data) {
+            myRoom.findOne({ roomID: data.roomName}).then(function(result){   
+                if (result.whoseTurn == "blue") 
+                    SOCKET_LIST[result.players[0].id].emit('giveClue',data);
+                else 
+                    SOCKET_LIST[result.players[1].id].emit('giveClue',data);
+                result.save().then(function(){ });
+                });
         });
 
         //TODO: captainTurn socket sets num_guesses and total_guesses equal to whatever captain typed in 
@@ -311,116 +321,114 @@ db.once('open', function () {
             //Finds all records of myRoom
             //myRoom.find({})
 
-            myRoom.findOne({ roomID: data.myRoomName }).then(function (room) {
+            myRoom.findOne({ roomID: data.myRoomName }).then(function (result) {
                 //Implementation of game logic 
-                if (data.team == "blue") {
-                    room.whoseTurn = "blue";
-                }
-                else if (data.team == "red") {
-                    room.whoseTurn = "red";
-                }
-                if (room.num_guesses == room.total_guesses) //At least one guess per turn is required
+                if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
                 {
                     //Reveal to all players the word_guessed
-                    for (var j = 0; j < room.players.length; j++) {
-                        SOCKET_LIST[room.players[j].id].emit('guessedTiles', data.wordGuessed);
+                    for (var j = 0; j < result.players.length; j++) {
+                        SOCKET_LIST[result.players[j].id].emit('guessedTiles', data.wordGuessed);
                     } //Display tiles to all players and gray out guessed tile
 
                     //Update revealedWords matrix and find color of word guessed
                     for (var k = 0; k < 25; k++) {
-                        if (data.wordGuessed == room.words[k]) {
-                            room.colorGuessed = room.colorWords[k];
-                            room.revealedWords[k] = 1;
+                        if (data.wordGuessed == result.words[k]) {
+                            result.colorGuessed = result.colorWords[k];
+                            result.revealedWords[k] = 1;
                         }
                     }
                     //Make a decision based on the color of the word revealed
-                    if (room.whoseTurn == room.colorGuessed) //Correct guess by agent
+                    if (result.whoseTurn == result.colorGuessed) //Correct guess by agent
                     {
-                        room.num_guesses--;
-                        if (room.whoseTurn == "blue") {
-                            room.revealed_blue_count++;
-                            if (room.revealed_blue_count == total_blue) //Check if blue team won
+                        result.num_guesses--;
+                        if (result.whoseTurn == "blue") {
+                            result.revealed_blue_count++;
+                            if (result.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j = 0; j < room.players.length; j++) {
+                                for (var j = 0; j < result.players.length; j++) {
                                     //Expectation for endGame from frontend: display who won and exit the game completely
-                                    SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
+                                    SOCKET_LIST[result.players[j].id].emit('endGame', "blue");
                                 }
                             }
                         }
                         else {
-                            room.revealed_red_count++;
-                            if (room.revealed_red_count == total_red) {
+                            result.revealed_red_count++;
+                            if (result.revealed_red_count == total_red) {
                                 //red team wins
-                                for (var j = 0; j < room.players.length; j++) {
-                                    SOCKET_LIST[room.players[j].id].emit('endGame', "red");
+                                for (var j = 0; j < result.players.length; j++) {
+                                    SOCKET_LIST[result.players[j].id].emit('endGame', "red");
                                 }
                             }
                         }
                     }
-                    else if (room.colorGuessed == "black") //Assassin tile
+                    else if (result.colorGuessed == "black") //Assassin tile
                     {
-                        if (room.whoseTurn == "red") {
+                        if (result.whoseTurn == "red") {
                             //blue team won
-                            for (var j = 0; j < room.players.length; j++) {
-                                SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
+                            for (var j = 0; j < result.players.length; j++) {
+                                SOCKET_LIST[result.players[j].id].emit('endGame', "blue");
                             }
                         }
                         else {
                             //red team won
-                            for (var j = 0; j < room.players.length; j++) {
-                                SOCKET_LIST[room.players[j].id].emit('endGame', "red");
+                            for (var j = 0; j < result.players.length; j++) {
+                                SOCKET_LIST[result.players[j].id].emit('endGame', "red");
                             }
                         }
                     }
-                    else if (room.colorGuessed == "brown") //Neutral tile
+                    else if (result.colorGuessed == "brown") //Neutral tile
                     {
-                        room.num_guesses = 0; //Switch turns
+                        result.num_guesses = 0; //Switch turns
                     }
                     else //Guessed opposing team's codeword 
                     {
-                        room.num_guesses = 0; //Switch turns
-                        if (room.whoseTurn == "blue") {
-                            room.revealed_red_count++;
-                            if (room.revealed_red_count == total_red) //Check if red team won
+                        result.num_guesses = 0; //Switch turns
+                        if (result.whoseTurn == "blue") {
+                            result.revealed_red_count++;
+                            if (result.revealed_red_count == total_red) //Check if red team won
                             {
-                                for (var j = 0; j < room.players.length; j++) {
-                                    SOCKET_LIST[room.players[j].id].emit('endGame', "red");
+                                for (var j = 0; j < result.players.length; j++) {
+                                    SOCKET_LIST[result.players[j].id].emit('endGame', "red");
                                 }
                             }
                         }
                         else {
-                            room.revealed_blue_count++;
-                            if (room.revealed_blue_count == total_blue) //Check if blue team won
+                            result.revealed_blue_count++;
+                            if (result.revealed_blue_count == total_blue) //Check if blue team won
                             {
-                                for (var j = 0; j < room.players.length; j++) {
-                                    SOCKET_LIST[room.players[j].id].emit('endGame', "blue");
+                                for (var j = 0; j < result.players.length; j++) {
+                                    SOCKET_LIST[result.players[j].id].emit('endGame', "blue");
                                 }
                             }
                         }
                     }
                 }
-                else if (room.num_guesses != room.total_guesses) {
-                    if (room.num_guesses == 0 && (room.revealed_red_count != total_red && room.revealed_blue_count != total_blue)) //No more guesses and no winner
+                else if (result.num_guesses != result.total_guesses) {
+                    if (result.num_guesses == 0 && (result.revealed_red_count != total_red && result.revealed_blue_count != total_blue)) //No more guesses and no winner
                     {
                         //Switch turns
+
+                        /*
                         if (room.whoseTurn == "red") {
                             room.whoseTurn = "blue";
                         }
                         else {
                             room.whoseTurn = "red";
                         }
-                        socket.emit('captainTurn', room.whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
+
+                        */
+                        socket.emit('captainTurn', result.whoseTurn); //Break out of this socket (ideally) and allow captain to type in clue
                     }
-                    else if (room.num_guesses > 0 && (room.revealed_red_count != total_red && room.revealed_blue_count != total_blue)) {
-                        for (var j = 0; j < room.players.length; j++) {
-                            SOCKET_LIST[room.players[j].id].emit('moreGuesses', room.whoseTurn); 
+                    else if (result.num_guesses > 0 && (result.revealed_red_count != total_red && result.revealed_blue_count != total_blue)) {
+                        for (var j = 0; j < result.players.length; j++) {
+                            SOCKET_LIST[result.players[j].id].emit('moreGuesses', result.whoseTurn); 
                             // TODO: Frontend asks user if they want to guess more
                             //If they want to guess more, call agentTurn function again
                             //If not,  call captainTurn function with appropriate team color
                         }
                     }
                 }
-                room.save().then(function () { });
+                result.save().then(function () { });
             });
             //Saving test
             //Describe tests
