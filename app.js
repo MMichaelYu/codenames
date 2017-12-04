@@ -331,8 +331,18 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.myRoomName }).then(function (result) {
                 //Implementation of game logic 
                 if (data.teamColor == result.whoseTurn) {
-                    if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
+                    console.log('color check passed');
+                    console.log(result.num_guesses);
+                    console.log(result.total_guesses);
+                    if (result.total_guesses == 0) {
+                        //captain gave 0 as a number or its the default value
+                        //either case, skip turn
+                        //TODO: switch turns here
+                    }
+                    //else if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
+                    else if (result.num_guesses > 0)
                     {
+                        console.log('# of guess check passed');
                         //Reveal to all players the word_guessed
                         for (var j = 0; j < result.players.length; j++) {
                             SOCKET_LIST[result.players[j].id].emit('guessedTiles', data.wordGuessed);
