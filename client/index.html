@@ -11,11 +11,13 @@
     <br>
     <span id="roomspan"> You don't have a room yet! </span>
     <br>
-    <span id="rulespanmaster" style="display:none"> Spy Masters: Give a 1 word hint that relate together words on the grid that match their color as well as a number that refers to how many words he/she is trying to connect together.</span>
+    <span id="rulespanmaster" style="display:none"> Spy Masters: Give a 1 word hint that relate together words on the grid that match their color as well as a number that
+        refers to how many words he/she is trying to connect together.</span>
     <br>
-    <span id="rulespanregular" style="display:none"> Reguler Members: Using the 1 word clue, guess a word on the grid by clicking it, your turn ends if you guess a word that's not your color. You get as many guesses as the number your Spy Master provides.</span>
+    <span id="rulespanregular" style="display:none"> Reguler Members: Using the 1 word clue, guess a word on the grid by clicking it, your turn ends if you guess a word that's
+        not your color. You get as many guesses as the number your Spy Master provides.</span>
     <br>
-    <span id="turnspan"> It's no one's turn! </span>   
+    <span id="turnspan"> It's no one's turn! </span>
     <form>
         <div id="gamesetup" style="display:block">
             Room:
@@ -32,10 +34,9 @@
 
     <div id="currentClue">
     </div>
-
     <div id="currentNumber">
     </div>
-    
+
     <div id="gametable" style="display:none">
         <button id="0" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
         <button id="1" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
@@ -68,52 +69,52 @@
         <button id="24" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
 
         <br>
-     <div id="captaintable" style="display:none">
-        <br>
-        <table border="3" width="150" height="100" style="text-align: center;">
-            <tr>
-                <td id="25"></td>
-                <td id="26"></td>
-                <td id="27"></td>
-                <td id="28"></td>
-                <td id="29"></td>
-            </tr>
-            <tr>
-                <td id="30"></td>
-                <td id="31"></td>
-                <td id="32"></td>
-                <td id="33"></td>
-                <td id="34"></td>
-            </tr>
-            <tr>
-                <td id="35"></td>
-                <td id="36"></td>
-                <td id="37"></td>
-                <td id="38"></td>
-                <td id="39"></td>
-            </tr>
-            <tr>
-                <td id="40"></td>
-                <td id="41"></td>
-                <td id="42"></td>
-                <td id="43"></td>
-                <td id="44"></td>
-            </tr>
-            <tr>
-                <td id="45"></td>
-                <td id="46"></td>
-                <td id="47"></td>
-                <td id="48"></td>
-                <td id="49"></td>
-            </tr>
-        </table>
+        <div id="captaintable" style="display:none">
+            <br>
+            <table border="3" width="150" height="100" style="text-align: center;">
+                <tr>
+                    <td id="25"></td>
+                    <td id="26"></td>
+                    <td id="27"></td>
+                    <td id="28"></td>
+                    <td id="29"></td>
+                </tr>
+                <tr>
+                    <td id="30"></td>
+                    <td id="31"></td>
+                    <td id="32"></td>
+                    <td id="33"></td>
+                    <td id="34"></td>
+                </tr>
+                <tr>
+                    <td id="35"></td>
+                    <td id="36"></td>
+                    <td id="37"></td>
+                    <td id="38"></td>
+                    <td id="39"></td>
+                </tr>
+                <tr>
+                    <td id="40"></td>
+                    <td id="41"></td>
+                    <td id="42"></td>
+                    <td id="43"></td>
+                    <td id="44"></td>
+                </tr>
+                <tr>
+                    <td id="45"></td>
+                    <td id="46"></td>
+                    <td id="47"></td>
+                    <td id="48"></td>
+                    <td id="49"></td>
+                </tr>
+            </table>
 
-        <br>
-        <p>Enter your clue in the form: word number</p>
-        Clue:
-        <input type="text" id="clue">
-        <button onclick="getinputtext()">Submit</button>
-      </div>
+            <br>
+            <p>Enter your clue in the form: word number</p>
+            Clue:
+            <input type="text" id="clue">
+            <button onclick="getinputtext()">Submit</button>
+        </div>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -124,13 +125,13 @@
     <script>
         var socket = io();
         console.log("socket made");
-	var wordarray;
+        var wordarray;
         var revealedarray;
         var colorarray;
         var myroomID;
-	var teamColor;
+        var teamColor;
+        var wordarray;
         //TODO: implement roomjoined method
-
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
             console.log('roomID:' + data.roomID);
@@ -148,10 +149,10 @@
             wordarray = data.words;
             revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             colorarray = [blue, red, black, brown, brown,
-                        red, brown, brown, brown, blue,
-                        blue, blue, blue, red, red,
-                        blue, blue, blue, blue, brown,
-                        red, red, red, red, brown];
+                red, brown, brown, brown, blue,
+                blue, blue, blue, red, red,
+                blue, blue, blue, blue, brown,
+                red, red, red, red, brown];
             for (i = 0; i < 25; i++) {
                 document.getElementById(i + 25).style.backgroundColor = colorarray[i];
                 document.getElementById(i).innerHTML = wordarray[i];
@@ -161,38 +162,37 @@
                 }
             }
             //tell player their roomID
-            document.getElementById("roomspan").textContent="RoomID: " + myroomID;
+            document.getElementById("roomspan").textContent = "RoomID: " + myroomID;
             //tell player their role
             if ((data.players.length - 1) === 0) {
-		document.getElementById("myspan").textContent="Blue Spy Master";
-	        teamColor = "blue";
-		for (i = 0; i < 25; i++) {
-	 	   document.getElementById(i).setAttribute('disabled', 'disabled');
-		}		
-	        var xy = document.getElementById("captaintable");
-                xy.style.display = "block";		    
+                document.getElementById("myspan").textContent = "Blue Spy Master";
+                teamColor = "blue";
+                for (i = 0; i < 25; i++) {
+                    document.getElementById(i).setAttribute('disabled', 'disabled');
+                }
+                var xy = document.getElementById("captaintable");
+                xy.style.display = "block";
             }
             else if ((data.players.length - 1) === 1) {
-                document.getElementById("myspan").textContent="Red Spy Master";
+                document.getElementById("myspan").textContent = "Red Spy Master";
                 teamColor = "red";
-		for (i = 0; i < 25; i++) {
-	 	   document.getElementById(i).setAttribute('disabled', 'disabled');
-		}
-		var xy = document.getElementById("captaintable");
+                for (i = 0; i < 25; i++) {
+                    document.getElementById(i).setAttribute('disabled', 'disabled');
+                }
+                var xy = document.getElementById("captaintable");
                 xy.style.display = "block";
-	    }
+            }
             //even index = blue player
             else if ((data.players.length - 1) % 2 === 0) {
-                document.getElementById("myspan").textContent="Blue Member";
+                document.getElementById("myspan").textContent = "Blue Member";
                 teamColor = "blue";
-	    }
+            }
             //odd index = red player
             else if ((data.players.length - 1) % 2 === 1) {
-                document.getElementById("myspan").textContent="Red Member";
+                document.getElementById("myspan").textContent = "Red Member";
                 teamColor = "red";
-	    }
+            }
         });
-
         socket.on('connect', function () {
             console.log("socket connected");
             document.getElementById("createbutton").addEventListener("click", function () {
@@ -206,65 +206,62 @@
             });
             //Implement cannotJoinGame function
         });
-
         function getinputtext() {
             var fullclue = document.getElementById("clue").value;
             var clueval = fullclue.substr(0, fullclue.length - 1);
             var cluenum = Number(fullclue.substr(fullclue.length - 1));
-            socket.emit('captainClueWord', { roomName: myroomID, clue: clueval});
-	    socket.emit('captainClueNumber', { roomName: myroomID, number: cluenum});		    
+            console.log(clueval);
+            socket.emit('captainClueWord', { roomName: myroomID, clue: clueval, teamColor: teamColor });
+            socket.emit('captainClueNumber', { roomName: myroomID, number: cluenum, teamColor: teamColor });
         }
-
         function startfunc(button) {
             socket.emit('startgame', { roomName: myroomID });
             console.log('emit startgame');
         }
-
         function checkword(word_id) {
-	  if(revealedarray[word_id] == 0) {
-	     revealedarray[word_id] = 1;		    
-             document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
-	     document.getElementById(word_id).style.fontWeight = "800";
-	     socket.emit('agentTurn', { roomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });		    
-	  }
-         }
-
-        socket.on('everyonestart', function() {
+            if (revealedarray[word_id] == 0) {
+                revealedarray[word_id] = 1;
+                document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
+                document.getElementById(word_id).style.fontWeight = "800";
+                socket.emit('agentTurn', { roomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
+            }
+        }
+        socket.on('everyonestart', function () {
             var x = document.getElementById("gametable");
             x.style.display = "block";
-           document.getElementById("startbutton").style.visibility = "hidden";
+            document.getElementById("startbutton").style.visibility = "hidden";
             var y = document.getElementById("gamesetup");
             y.style.display = "none";
             document.getElementById("rulespanmaster").style.display = "inline";
             document.getElementById("rulespanregular").style.display = "inline";
-            document.getElementById("turnspan").textContent="Blue Spy Master's Turn: Enter your 1-word clue and number";
+            document.getElementById("turnspan").textContent = "Blue Spy Master's Turn: Enter your 1-word clue and number";
             //socket.emit('doATurn', {roomName: myroomID });
         });
-
-        socket.on('test', function() {
+        socket.on('test', function () {
             console.log('test worked');
-	});
-
-        socket.on('clue', function(data) {
-             document.getElementById("currentClue").innerHTML = data; 
         });
 
-	socket.on('number', function(data) {
-             document.getElementById("currentNumber").innerHTML = data; 
+        socket.on('clue', function (data) {
+            document.getElementById("currentClue").textContent = "Current clue: " + data;
         });
-			    
-        socket.on('guessedTiles', function(data) {
-             for(var k = 0; k < 25; k++) {
-                if(data == wordarray[k]) {
-                   revealedarray[k] = 1;                   
-	           document.getElementById(k).style.backgroundColor = colorarray[k];
-                   document.getElementById(k).style.fontWeight = "800";
-		}
-	     }
+
+        socket.on('number', function (data) {
+            document.getElementById("currentNumber").textContent = "Words to guess: " + data;
         });
-   
-			    
-			    
+
+        socket.on('guessedTiles', function (data) {
+            for (var k = 0; k < 25; k++) {
+                if (data == wordarray[k]) {
+                    revealedarray[k] = 1;
+                    document.getElementById(k).style.backgroundColor = colorarray[k];
+                    document.getElementById(k).style.fontWeight = "800";
+                }
+            }
+        });
+
+
+
     </script>
 </body>
+
 </html>
