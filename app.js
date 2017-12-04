@@ -266,7 +266,7 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.roomName }).then(function (result) {
                 if (data.teamColor == result.whoseTurn) {
                     for (var j = 0; j < result.players.length; j++) {
-                        SOCKET_LIST[result.players[j].id].emit('clue', data.clue );
+                        SOCKET_LIST[result.players[j].id].emit('clue', data.clue);
                     }
                 }
                 result.save().then(function () { });
@@ -277,12 +277,12 @@ db.once('open', function () {
         socket.on('captainClueNumber', function (data) {
             myRoom.findOne({ roomID: data.roomName }).then(function (result) {
                 if (data.teamColor == result.whoseTurn) {
-                result.num_guesses = data.number;
-                result.total_guesses = data.number;
-                for (var j = 0; j < result.players.length; j++) {
-                    SOCKET_LIST[result.players[j].id].emit('number', data.number);
+                    result.num_guesses = data.number;
+                    result.total_guesses = data.number;
+                    for (var j = 0; j < result.players.length; j++) {
+                        SOCKET_LIST[result.players[j].id].emit('number', data.number);
+                    }
                 }
-            }
                 result.save().then(function () { });
             });
         });
