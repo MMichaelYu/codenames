@@ -209,16 +209,18 @@
             document.getElementById("rulespanregular").style.display = "inline";
             document.getElementById("turnspan").textContent="Blue Spy Master's Turn: Enter your 1-word clue and number";
             //socket.emit('doATurn', {roomName: myroomID });
-            socket.emit('askForClue', { roomName: myroomID });
+            //socket.emit('askForClue', { roomName: myroomID });
         });
 
         socket.on('captainTurn', function(data) {
             socket.emit('captainSwap', { roomName: myroomID });
         });
 
+        /*
         socket.on('giveClue', function(data) {
-            //Return clue word ----> captainClueWord
+            //tell captain its his/her turn
         });
+        */
 
         socket.on('clue', function(data) {
             //display to everyone
@@ -231,16 +233,19 @@
             //send to agentTurn
         });
 
+        /*
         socket.on('moreGuesses', function(data) {
             //ask to end turn or not
             //end turn ---> captainSwap
             //more guess ---> askForClue
         });
+        */
 
         socket.on('guessedTiles', function(data) {
-            //ask to end turn or not
-            //end turn ---> captainSwap
-            //more guess ---> askForClue
+
+
+
+
         });
 
         socket.on('endGame', function(data) {
