@@ -124,6 +124,7 @@
     <script>
         var socket = io();
         console.log("socket made");
+	var wordarray;
         var revealedarray;
         var colorarray;
         var myroomID;
@@ -144,7 +145,7 @@
             var red = "#f00000";
             var black = "#000000";
             var brown = "#d2b48c";
-            var wordarray = data.words;
+            wordarray = data.words;
             revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             colorarray = [blue, red, black, brown, brown,
                         red, brown, brown, brown, blue,
@@ -164,13 +165,19 @@
             //tell player their role
             if ((data.players.length - 1) === 0) {
 		document.getElementById("myspan").textContent="Blue Spy Master";
-		teamColor = "blue";
+	        teamColor = "blue";
+		for (i = 0; i < 25; i++) {
+	 	   document.getElementById(i).setAttribute('disabled', 'disabled');
+		}		
 	        var xy = document.getElementById("captaintable");
                 xy.style.display = "block";		    
             }
             else if ((data.players.length - 1) === 1) {
                 document.getElementById("myspan").textContent="Red Spy Master";
                 teamColor = "red";
+		for (i = 0; i < 25; i++) {
+	 	   document.getElementById(i).setAttribute('disabled', 'disabled');
+		}
 		var xy = document.getElementById("captaintable");
                 xy.style.display = "block";
 	    }
@@ -215,9 +222,9 @@
 
         function checkword(word_id) {
 	  if(revealedarray[word_id] == 0) {
-	     revealedarray[word_id] = 1;
+	     revealedarray[word_id] = 1;		    
              document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
-             document.getElementById(word_id).style.fontWeight = "800";
+	     document.getElementById(word_id).style.fontWeight = "800";
 	     socket.emit('agentTurn', { roomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });		    
 	  }
          }
