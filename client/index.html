@@ -29,6 +29,12 @@
     <br>
 
     <button onclick="startfunc(this)" type="button" id="startbutton">Start game</button>
+
+    <div id="currentClue">
+    </div>
+    <div id="currentNumber">
+    </div>
+    
     <div id="gametable" style="display:none">
         <button id="0" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
         <button id="1" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
@@ -61,6 +67,7 @@
         <button id="24" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
 
         <br>
+     <div id="captaintable" style="display:none">
         <br>
         <table border="3" width="150" height="100" style="text-align: center;">
             <tr>
@@ -105,7 +112,7 @@
         Clue:
         <input type="text" id="clue">
         <button onclick="getinputtext()">Submit</button>
-
+      </div>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -119,6 +126,8 @@
         var revealedarray;
         var colorarray;
         var myroomID;
+        var teamColor;
+        var wordarray;
         //TODO: implement roomjoined method
 
         socket.on('myroomjoined', (data) => {
@@ -130,15 +139,18 @@
             myroomID = data.roomID;
             //game starts here
             //put more socket events in this block
-            var test = "testtest";
             var colortouse = "#ff00ff";
             var blue = "#0000ff";
             var red = "#f00000";
             var black = "#000000";
             var brown = "#d2b48c";
-            var wordarray = data.words;
-            revealedarray = [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0];
-            colorarray = [red, red, blue, red, brown, brown, blue, red, red, blue, blue, brown, blue, brown, red, brown, red, red, blue, blue, blue, black, brown, blue, red];
+            wordarray = data.words;
+            revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            colorarray = [blue, red, black, brown, brown,
+                        red, brown, brown, brown, blue,
+                        blue, blue, blue, red, red,
+                        blue, blue, blue, blue, brown,
+                        red, red, red, red, brown];
             for (i = 0; i < 25; i++) {
                 document.getElementById(i + 25).style.backgroundColor = colorarray[i];
                 document.getElementById(i).innerHTML = wordarray[i];
@@ -151,19 +163,27 @@
             document.getElementById("roomspan").textContent="RoomID: " + myroomID;
             //tell player their role
             if ((data.players.length - 1) === 0) {
-                document.getElementById("myspan").textContent="Blue Spy Master";
+		document.getElementById("myspan").textContent="Blue Spy Master";
+		teamColor = "blue";
+	        var xy = document.getElementById("captaintable");
+                xy.style.display = "block";		    
             }
             else if ((data.players.length - 1) === 1) {
                 document.getElementById("myspan").textContent="Red Spy Master";
-            }
+                teamColor = "red";
+		var xy = document.getElementById("captaintable");
+                xy.style.display = "block";
+	    }
             //even index = blue player
             else if ((data.players.length - 1) % 2 === 0) {
                 document.getElementById("myspan").textContent="Blue Member";
-            }
+                teamColor = "blue";
+	    }
             //odd index = red player
             else if ((data.players.length - 1) % 2 === 1) {
                 document.getElementById("myspan").textContent="Red Member";
-            }
+                teamColor = "red";
+	    }
         });
 
         socket.on('connect', function () {
@@ -184,8 +204,9 @@
             var fullclue = document.getElementById("clue").value;
             var clueval = fullclue.substr(0, fullclue.length - 1);
             var cluenum = Number(fullclue.substr(fullclue.length - 1));
-            document.getElementById("clue").value = "clueval is " + clueval + "cluenum is " + cluenum;
-
+            console.log(clueval);
+            socket.emit('captainClueWord', { roomName: myroomID, clue: clueval});
+	    socket.emit('captainClueNumber', { roomName: myroomID, number: cluenum});		    
         }
 
         function startfunc(button) {
@@ -194,15 +215,18 @@
         }
 
         function checkword(word_id) {
-            revealedarray[word_id] = 1;
-            document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
-            document.getElementById(word_id).style.fontWeight = "800";
-        }
+	  if(revealedarray[word_id] == 0) {
+	     revealedarray[word_id] = 1;
+             document.getElementById(word_id).style.backgroundColor = colorarray[word_id];
+             document.getElementById(word_id).style.fontWeight = "800";
+	     socket.emit('agentTurn', { roomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });		    
+	  }
+         }
 
         socket.on('everyonestart', function() {
             var x = document.getElementById("gametable");
             x.style.display = "block";
-            document.getElementById("startbutton").style.visibility = "hidden";
+           document.getElementById("startbutton").style.visibility = "hidden";
             var y = document.getElementById("gamesetup");
             y.style.display = "none";
             document.getElementById("rulespanmaster").style.display = "inline";
@@ -213,7 +237,28 @@
 
         socket.on('test', function() {
             console.log('test worked');
+	});
+
+        socket.on('clue', function(data) {
+             document.getElementById("currentClue").textContent = "Current clue: " + data; 
         });
+
+	socket.on('number', function(data) {
+             document.getElementById("currentNumber").textContent = "Words to guess: " + data; 
+        });
+			    
+        socket.on('guessedTiles', function(data) {
+             for(var k = 0; k < 25; k++) {
+                if(data == wordarray[k]) {
+                   revealedarray[k] = 1;                   
+	           document.getElementById(k).style.backgroundColor = colorarray[k];
+                   document.getElementById(k).style.fontWeight = "800";
+		}
+	     }
+        });
+   
+			    
+			    
     </script>
 </body>
 </html>
