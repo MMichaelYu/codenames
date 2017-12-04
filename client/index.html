@@ -32,7 +32,6 @@
 
     <div id="currentClue">
     </div>
-
     <div id="currentNumber">
     </div>
     
@@ -127,7 +126,8 @@
         var revealedarray;
         var colorarray;
         var myroomID;
-	var teamColor;
+        var teamColor;
+        var wordarray;
         //TODO: implement roomjoined method
 
         socket.on('myroomjoined', (data) => {
@@ -144,7 +144,7 @@
             var red = "#f00000";
             var black = "#000000";
             var brown = "#d2b48c";
-            var wordarray = data.words;
+            wordarray = data.words;
             revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             colorarray = [blue, red, black, brown, brown,
                         red, brown, brown, brown, blue,
@@ -204,6 +204,7 @@
             var fullclue = document.getElementById("clue").value;
             var clueval = fullclue.substr(0, fullclue.length - 1);
             var cluenum = Number(fullclue.substr(fullclue.length - 1));
+            console.log(clueval);
             socket.emit('captainClueWord', { roomName: myroomID, clue: clueval});
 	    socket.emit('captainClueNumber', { roomName: myroomID, number: cluenum});		    
         }
@@ -239,11 +240,11 @@
 	});
 
         socket.on('clue', function(data) {
-             document.getElementById("currentClue").innerHTML = data; 
+             document.getElementById("currentClue").textContent = "Current clue: " + data; 
         });
 
 	socket.on('number', function(data) {
-             document.getElementById("currentNumber").innerHTML = data; 
+             document.getElementById("currentNumber").textContent = "Words to guess: " + data; 
         });
 			    
         socket.on('guessedTiles', function(data) {

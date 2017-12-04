@@ -275,7 +275,7 @@ db.once('open', function () {
         socket.on('captainClueNumber', function (data) {
             myRoom.findOne({ roomID: data.roomName}).then(function(result){    
                     for (var j = 0; j < result.players.length; j++) {
-                        SOCKET_LIST[result.players[j].id].emit('clue',data.number);
+                        SOCKET_LIST[result.players[j].id].emit('number',data.number);
                     }         
                     result.num_guesses = data.number;
                     result.total_guesses = data.number;
