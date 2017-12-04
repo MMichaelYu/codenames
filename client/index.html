@@ -231,9 +231,11 @@
         socket.on('test', function() {
             console.log('test worked');
 	});
+
         socket.on('clue', function(data) {
              document.getElementById("currentClue").textContent = "Current clue: " + data; 
         });
+
 	socket.on('number', function(data) {
              document.getElementById("currentNumber").textContent = "Words to guess: " + data; 
         });

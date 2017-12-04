@@ -165,7 +165,7 @@ db.once('open', function () {
                     colorWords: ["blue", "red", "black", "brown", "brown",
                         "red", "brown", "brown", "brown", "blue",
                         "blue", "blue", "blue", "red", "red",
-                        "blue", "blue", "blue,", "blue", "brown",
+                        "blue", "blue", "blue", "blue", "brown",
                         "red", "red", "red", "red", "brown"],
                     revealed_red_count: 0,
                     revealed_blue_count: 0,
