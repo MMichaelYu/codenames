@@ -405,11 +405,11 @@ db.once('open', function () {
                         }
                         else if (result.colorGuessed == "brown") //Neutral tile
                         {
-                            result.num_guesses = 0; //Switch turns
+                            result.num_guesses = -1; //Switch turns
                         }
                         else //Guessed opposing team's codeword 
                         {
-                            result.num_guesses = 0; //Switch turns
+                            result.num_guesses = -1; //Switch turns
                             if (result.whoseTurn == "blue") {
                                 result.revealed_red_count++;
                                 if (result.revealed_red_count == total_red) //Check if red team won
