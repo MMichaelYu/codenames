@@ -5,8 +5,8 @@ var io = require('socket.io')(serv, {});
 const myRoom = require('./models/myRoom.js');
 
 var colorTiles = ["blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue",
-"red", "red", "red", "red", "red", "red", "red", "red", "black", "brown", "brown", "brown"
-, "brown", "brown", "brown", "brown"];
+"red", "red", "red", "red", "red", "red", "red", "red", "black", "sandybrown", "sandybrown", "sandybrown", 
+"sandybrown", "sandybrown", "sandybrown", "sandybrown"];
 
 var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
     , "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
@@ -426,7 +426,7 @@ db.once('open', function () {
                                 }
                             }
                         }
-                        else if (result.colorGuessed == "brown") //Neutral tile
+                        else if (result.colorGuessed == "sandybrown") //Neutral tile
                         {
                             result.num_guesses = -1; //Switch turns
                         }
