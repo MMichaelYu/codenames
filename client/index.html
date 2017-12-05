@@ -222,7 +222,7 @@
         }
 
         function endturnfunc(button) {
-            socket.emit('captainSwap', { myRoomName: myroomID });
+            socket.emit('captainSwap', { teamColor: teamColor, myRoomName: myroomID });
             var xy = document.getElementById("endturn");
             xy.style.display = "none";
         }
@@ -302,7 +302,7 @@
 
         socket.on('captainTurn', function (data) {
             console.log('captainturn called');
-            socket.emit('captainSwap', { myRoomName: myroomID });
+            socket.emit('captainSwap', { teamColor: teamColor, myRoomName: myroomID });
         });
 
     </script>
