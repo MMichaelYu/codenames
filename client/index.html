@@ -140,7 +140,7 @@
         var red = "#f00000";
         var black = "#000000";
         var brown = "#d2b48c";
-        var numguesses;
+
 	//TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
@@ -228,8 +228,6 @@
 				
 	function checkword(word_id) {
 		if (revealedarray[word_id] == 0) {
-		numguesses = numguesses - 1;
-		document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + numguesses;
                 socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
                 var xy = document.getElementById("endturn");
                 xy.style.display = "block";
@@ -249,13 +247,17 @@
         socket.on('test', function () {
             console.log('test worked');
         });
-
+    
+	socket.on('guessesLeft', function(data) {
+		document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + data;
+        }
+				
         socket.on('clue', function (data) {
             document.getElementById("currentClue").textContent = "Current clue: " + data;
         });
 
 	socket.on('number', function (data) {
-	    numguesses = data + 1;			
+	    var numguesses = data + 1;			
             document.getElementById("currentNumber").textContent = "Number of remaining guess: " + numguesses;
         });
 
