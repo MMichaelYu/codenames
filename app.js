@@ -366,7 +366,7 @@ db.once('open', function () {
                     if (result.total_guesses == 0) {
                         //this shouldn't happen
                         console.log('total guesses is 0 for some reason');
-                        socket.emit('captainTurn', result.whoseTurn);
+                        //socket.emit('captainTurn', result.whoseTurn);
                         //captain gave 0 as a number or its the default value
                         //either case, skip turn
                         //TODO: switch turns here
