@@ -261,6 +261,13 @@
             }
         });
 
+        socket.on('endGame', function(data){
+            document.getElementById("turnspan").textContent = data + " team won!";
+            for (i = 0; i < 25; i++) {
+                document.getElementById(i).setAttribute('disabled', 'disabled');
+            }
+        });
+
     </script>
 </body>
 

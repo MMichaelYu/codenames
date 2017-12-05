@@ -335,6 +335,7 @@ db.once('open', function () {
                     console.log(result.num_guesses);
                     console.log(result.total_guesses);
                     if (result.total_guesses == 0) {
+                        console.log('total guesses is 0 for some reason');
                         //captain gave 0 as a number or its the default value
                         //either case, skip turn
                         //TODO: switch turns here
@@ -421,8 +422,8 @@ db.once('open', function () {
                             }
                         }
                     }
-                    else if (result.num_guesses != result.total_guesses) {
-                        if (result.num_guesses == 0 && (result.revealed_red_count != total_red && result.revealed_blue_count != total_blue)) //No more guesses and no winner
+                    else { //next turn
+                        if ((result.revealed_red_count != total_red) && (result.revealed_blue_count != total_blue)) //No more guesses and no winner
                         {
                             //Switch turns
 
