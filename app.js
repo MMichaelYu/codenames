@@ -349,7 +349,7 @@ db.once('open', function () {
                         //TODO: switch turns here
                     }
                     //else if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
-                    else if (result.num_guesses > 0)
+                    else if (result.num_guesses+1 > 0)
                     {
                         console.log('# of guess check passed');
                         //Reveal to all players the word_guessed
@@ -429,7 +429,7 @@ db.once('open', function () {
                                 }
                             }
                         }
-                        if (result.num_guesses == 0) {
+                        if (result.num_guesses == -1) {
                             socket.emit('captainTurn', result.whoseTurn);
                         }
                     }
