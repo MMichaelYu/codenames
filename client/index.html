@@ -250,7 +250,8 @@
         });
 
         socket.on('guessesLeft', function (data) {
-            document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + data;
+            var num = data + 1;
+            document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + num;
         });
 
         socket.on('clue', function (data) {
