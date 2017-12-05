@@ -72,7 +72,7 @@
 
         <br>
         <button id="endturn" onClick="endturnfunc(this)" style="display:none">End Turn</button>
-	
+
         <div id="captaintable" style="display:none">
             <br>
             <table border="3" width="150" height="100" style="text-align: center;">
@@ -141,7 +141,7 @@
         var black = "#000000";
         var brown = "#d2b48c";
 
-	//TODO: implement roomjoined method
+        //TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
             console.log('roomID:' + data.roomID);
@@ -158,7 +158,7 @@
             //     blue, blue, blue, red, red,
             //     blue, blue, blue, blue, brown,
             colorarray = data.colorWords;
-                // red, red, red, red, brown];
+            // red, red, red, red, brown];
             for (i = 0; i < 25; i++) {
                 document.getElementById(i + 25).style.backgroundColor = colorarray[i];
                 document.getElementById(i).innerHTML = wordarray[i];
@@ -222,17 +222,17 @@
         }
 
         function endturnfunc(button) {
-            socket.emit('captainSwap', { myRoomName: myroomID }); 
+            socket.emit('captainSwap', { myRoomName: myroomID });
             var xy = document.getElementById("endturn");
             xy.style.display = "none";
-	}
-				
-	function checkword(word_id) {
-		if (revealedarray[word_id] == 0) {
+        }
+
+        function checkword(word_id) {
+            if (revealedarray[word_id] == 0) {
                 socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
                 var xy = document.getElementById("endturn");
                 xy.style.display = "block";
-	    }
+            }
         }
         socket.on('everyonestart', function () {
             var x = document.getElementById("gametable");
@@ -248,17 +248,17 @@
         socket.on('test', function () {
             console.log('test worked');
         });
-    
-	socket.on('guessesLeft', function(data) {
-		document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + data;
-        }
-				
+
+        socket.on('guessesLeft', function (data) {
+            document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + data;
+        });
+
         socket.on('clue', function (data) {
             document.getElementById("currentClue").textContent = "Current clue: " + data;
         });
 
-	socket.on('number', function (data) {
-	    var numguesses = data + 1;			
+        socket.on('number', function (data) {
+            var numguesses = data + 1;
             document.getElementById("currentNumber").textContent = "Number of remaining guess: " + numguesses;
         });
 
@@ -272,7 +272,7 @@
             }
         });
 
-        socket.on('updatePrompt', function(data) {
+        socket.on('updatePrompt', function (data) {
             if (data == 'blue') {
                 document.getElementById("turnspan").textContent = "Blue Member's Turn: Click on a tile to guess that word";
             }
@@ -281,7 +281,7 @@
             }
         });
 
-        socket.on('updatePromptCaptain', function(data) {
+        socket.on('updatePromptCaptain', function (data) {
             console.log('update captain prompt called');
             if (data == 'blue') {
                 document.getElementById('turnspan').textContent = "Blue Spy Master's Turn: Enter your 1-word clue and number";
@@ -291,7 +291,7 @@
             }
         });
 
-        socket.on('endGame', function(data){
+        socket.on('endGame', function (data) {
             document.getElementById("endspan").style.display = "inline";
             document.getElementById("endspan").textContent = data + " team won!";
             for (i = 0; i < 25; i++) {
@@ -299,9 +299,9 @@
             }
         });
 
-        socket.on('captainTurn', function(data) {
+        socket.on('captainTurn', function (data) {
             console.log('captainturn called');
-            socket.emit('captainSwap', {myRoomName: myroomID});
+            socket.emit('captainSwap', { myRoomName: myroomID });
         });
 
     </script>

@@ -316,6 +316,8 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.myRoomName }).then(function (result) {
                 //console.log('captainswap called');
                 //console.log(result.whoseTurn);
+                result.num_guesses = 0;
+                result.total_guesses = 0;
                 if (result.whoseTurn == "blue") {
                     result.whoseTurn = "red";
                     //SOCKET_LIST[result.players[1].id].emit('giveClue', result.whoseTurn);
