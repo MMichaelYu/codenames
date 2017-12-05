@@ -18,6 +18,8 @@
         not your color. You get as many guesses as the number your Spy Master provides.</span>
     <br>
     <span id="turnspan"> It's no one's turn! </span>
+    <br>
+    <span id="endspan" style="display:none"> </span>
     <form>
         <div id="gamesetup" style="display:block">
             Room:
@@ -261,11 +263,27 @@
             }
         });
 
+        socket.on('updatePromptCaptain', function(data) {
+            console.log('update captain prompt called');
+            if (data == 'blue') {
+                document.getElementById('turnspan').textContent = "Blue Spy Master's Turn: Enter your 1-word clue and number";
+            }
+            else if (data == 'red') {
+                document.getElementById('turnspan').textContent = "Red Spy Master's Turn: Enter your 1-word clue and number";
+            }
+        });
+
         socket.on('endGame', function(data){
-            document.getElementById("turnspan").textContent = data + " team won!";
+            document.getElementById("endspan").style.display = "inline";
+            document.getElementById("endspan").textContent = data + " team won!";
             for (i = 0; i < 25; i++) {
                 document.getElementById(i).setAttribute('disabled', 'disabled');
             }
+        });
+
+        socket.on('captainTurn', function(data) {
+            console.log('captainturn called');
+            socket.emit('captainSwap', {myRoomName: myroomID});
         });
 
     </script>

@@ -290,7 +290,9 @@ db.once('open', function () {
 
         //Responce to frontend saying to not make more guesses
         socket.on('captainSwap', function (data) {
-            myRoom.findOne({ roomID: data.roomName }).then(function (result) {
+            myRoom.findOne({ roomID: data.myRoomName }).then(function (result) {
+                //console.log('captainswap called');
+                //console.log(result.whoseTurn);
                 if (result.whoseTurn == "blue") {
                     result.whoseTurn = "red";
                     //SOCKET_LIST[result.players[1].id].emit('giveClue', result.whoseTurn);
@@ -298,6 +300,10 @@ db.once('open', function () {
                 else {
                     result.whoseTurn = "blue";
                     //SOCKET_LIST[result.players[0].id].emit('giveClue', result.whoseTurn);
+                }
+                //console.log('going to emit in captainswap');
+                for (var j = 0; j < result.players.length; j++) {
+                    SOCKET_LIST[result.players[j].id].emit('updatePromptCaptain', result.whoseTurn);
                 }
                 result.save().then(function () { });
             });
@@ -335,7 +341,9 @@ db.once('open', function () {
                     console.log(result.num_guesses);
                     console.log(result.total_guesses);
                     if (result.total_guesses == 0) {
+                        //this shouldn't happen
                         console.log('total guesses is 0 for some reason');
+                        socket.emit('captainTurn', result.whoseTurn);
                         //captain gave 0 as a number or its the default value
                         //either case, skip turn
                         //TODO: switch turns here
@@ -421,10 +429,14 @@ db.once('open', function () {
                                 }
                             }
                         }
+                        if (result.num_guesses == 0) {
+                            socket.emit('captainTurn', result.whoseTurn);
+                        }
                     }
                     else { //next turn
                         if ((result.revealed_red_count != total_red) && (result.revealed_blue_count != total_blue)) //No more guesses and no winner
                         {
+                            console.log('captainTurn called');
                             //Switch turns
 
                             /*
