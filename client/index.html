@@ -71,6 +71,8 @@
         <button id="24" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
 
         <br>
+        <button id="endturn" onClick="endturnfunc(this)" style="display:none">End Turn</button>
+	
         <div id="captaintable" style="display:none">
             <br>
             <table border="3" width="150" height="100" style="text-align: center;">
@@ -138,7 +140,8 @@
         var red = "#f00000";
         var black = "#000000";
         var brown = "#d2b48c";
-        //TODO: implement roomjoined method
+        var numguesses;
+	//TODO: implement roomjoined method
         socket.on('myroomjoined', (data) => {
             //console.log(data.roomID);
             console.log('roomID:' + data.roomID);
@@ -216,10 +219,21 @@
         function startfunc(button) {
             socket.emit('startgame', { roomName: myroomID });
         }
-        function checkword(word_id) {
-            if (revealedarray[word_id] == 0) {
+
+        function endturnfunc(button) {
+            socket.emit('captainSwap', { myRoomName: myroomID }); 
+            var xy = document.getElementById("endturn");
+            xy.style.display = "none";
+	}
+				
+	function checkword(word_id) {
+		if (revealedarray[word_id] == 0) {
+		numguesses = numguesses - 1;
+		document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + numguesses;
                 socket.emit('agentTurn', { myRoomName: myroomID, wordGuessed: wordarray[word_id], teamColor: teamColor });
-            }
+                var xy = document.getElementById("endturn");
+                xy.style.display = "block";
+	    }
         }
         socket.on('everyonestart', function () {
             var x = document.getElementById("gametable");
@@ -240,8 +254,9 @@
             document.getElementById("currentClue").textContent = "Current clue: " + data;
         });
 
-        socket.on('number', function (data) {
-            document.getElementById("currentNumber").textContent = "Words to guess: " + data;
+	socket.on('number', function (data) {
+	    numguesses = data + 1;			
+            document.getElementById("currentNumber").textContent = "Number of remaining guess: " + numguesses;
         });
 
         socket.on('guessedTiles', function (data) {
