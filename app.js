@@ -391,6 +391,7 @@ db.once('open', function () {
                         if (result.whoseTurn == result.colorGuessed) //Correct guess by agent
                         {
                             result.num_guesses--;
+                            socket.emit('guessesLeft', result.num_guesses);
                             if (result.whoseTurn == "blue") {
                                 result.revealed_blue_count++;
                                 if (result.revealed_blue_count == total_blue) //Check if blue team won
