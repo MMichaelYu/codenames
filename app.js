@@ -5,8 +5,8 @@ var io = require('socket.io')(serv, {});
 const myRoom = require('./models/myRoom.js');
 
 var colorTiles = ["blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue",
-"red", "red", "red", "red", "red", "red", "red", "red", "black", "sandybrown", "sandybrown", "sandybrown", 
-"sandybrown", "sandybrown", "sandybrown", "sandybrown"];
+    "red", "red", "red", "red", "red", "red", "red", "red", "black", "sandybrown", "sandybrown", "sandybrown",
+    "sandybrown", "sandybrown", "sandybrown", "sandybrown"];
 
 var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
     , "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
@@ -101,18 +101,18 @@ db.once('open', function () {
 
     function shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
-      
+
         // While there remain elements to shuffle...
         while (0 !== currentIndex) {
-      
-          // Pick a remaining element...
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex -= 1;
-      
-          // And swap it with the current element.
-          temporaryValue = array[currentIndex];
-          array[currentIndex] = array[randomIndex];
-          array[randomIndex] = temporaryValue;
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
         }
         return array;
     }
@@ -316,21 +316,23 @@ db.once('open', function () {
             myRoom.findOne({ roomID: data.myRoomName }).then(function (result) {
                 //console.log('captainswap called');
                 //console.log(result.whoseTurn);
-                result.num_guesses = 0;
-                result.total_guesses = 0;
-                if (result.whoseTurn == "blue") {
-                    result.whoseTurn = "red";
-                    //SOCKET_LIST[result.players[1].id].emit('giveClue', result.whoseTurn);
+                if (data.teamColor == result.whoseTurn) {
+                    result.num_guesses = 0;
+                    result.total_guesses = 0;
+                    if (result.whoseTurn == "blue") {
+                        result.whoseTurn = "red";
+                        //SOCKET_LIST[result.players[1].id].emit('giveClue', result.whoseTurn);
+                    }
+                    else {
+                        result.whoseTurn = "blue";
+                        //SOCKET_LIST[result.players[0].id].emit('giveClue', result.whoseTurn);
+                    }
+                    //console.log('going to emit in captainswap');
+                    for (var j = 0; j < result.players.length; j++) {
+                        SOCKET_LIST[result.players[j].id].emit('updatePromptCaptain', result.whoseTurn);
+                    }
+                    result.save().then(function () { });
                 }
-                else {
-                    result.whoseTurn = "blue";
-                    //SOCKET_LIST[result.players[0].id].emit('giveClue', result.whoseTurn);
-                }
-                //console.log('going to emit in captainswap');
-                for (var j = 0; j < result.players.length; j++) {
-                    SOCKET_LIST[result.players[j].id].emit('updatePromptCaptain', result.whoseTurn);
-                }
-                result.save().then(function () { });
             });
             //TODO: send to just the captain? Check which socket its saved in later
         });
@@ -374,8 +376,7 @@ db.once('open', function () {
                         //TODO: switch turns here
                     }
                     //else if (result.num_guesses == result.total_guesses) //At least one guess per turn is required
-                    else if (result.num_guesses+1 > 0)
-                    {
+                    else if (result.num_guesses + 1 > 0) {
                         console.log('# of guess check passed');
                         //Reveal to all players the word_guessed
                         for (var j = 0; j < result.players.length; j++) {
