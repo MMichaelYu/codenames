@@ -4,6 +4,10 @@ var serv = require('http').Server(app);
 var io = require('socket.io')(serv, {});
 const myRoom = require('./models/myRoom.js');
 
+var colorTiles = ["blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue", "blue",
+"red", "red", "red", "red", "red", "red", "red", "red", "black", "brown", "brown", "brown"
+, "brown", "brown", "brown", "brown"];
+
 var codes = ["Acne", "Acre", "Addendum", "Advertise", "Aircraft", "Aisle", "Alligator", "Alphabetize", "America", "Ankle"
     , "Apathy", "Applause", "Applesauce", "Application", "Archaeologist", "Aristocrat", "Arm", "Armada", "Asleep", "Astronaut"
     , "Athlete", "Atlantis", "Aunt", "Avocado", "Baby-Sitter", "Backbone", "Bag", "Baguette", "Bald", "Balloon"
@@ -95,6 +99,24 @@ db.once('open', function () {
         return [...Array(len)].reduce(a => a + p[~~(Math.random() * p.length)], '');
     }
 
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+      
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+      
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+      
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+    }
+
     serv.listen(process.env.PORT || 5000);
     console.log("Server started.");
 
@@ -162,18 +184,19 @@ db.once('open', function () {
                         0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0],
-                    colorWords: ["blue", "red", "black", "brown", "brown",
-                        "red", "brown", "brown", "brown", "blue",
-                        "blue", "blue", "blue", "red", "red",
-                        "blue", "blue", "blue", "blue", "brown",
-                        "red", "red", "red", "red", "brown"],
+                    // colorWords: ["blue", "red", "black", "brown", "brown",
+                    //     "red", "brown", "brown", "brown", "blue",
+                    //     "blue", "blue", "blue", "red", "red",
+                    //     "blue", "blue", "blue", "blue", "brown",
+                    //     "red", "red", "red", "red", "brown"],
                     revealed_red_count: 0,
                     revealed_blue_count: 0,
                     colorGuessed: "",
                     num_guesses: 0,
                     total_guesses: 0
                 });
-
+                //shuffle color array
+                room.colorWords = shuffle(colorTiles);
                 //generating 25 codewords for game object
                 var noDuplicateCode = 1;
                 var i = 0;

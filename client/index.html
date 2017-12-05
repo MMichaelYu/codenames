@@ -150,11 +150,12 @@
 
             wordarray = data.words;
             revealedarray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            colorarray = [blue, red, black, brown, brown,
-                red, brown, brown, brown, blue,
-                blue, blue, blue, red, red,
-                blue, blue, blue, blue, brown,
-                red, red, red, red, brown];
+            // colorarray = [blue, red, black, brown, brown,
+            //     red, brown, brown, brown, blue,
+            //     blue, blue, blue, red, red,
+            //     blue, blue, blue, blue, brown,
+            colorarray = data.colorWords;
+                // red, red, red, red, brown];
             for (i = 0; i < 25; i++) {
                 document.getElementById(i + 25).style.backgroundColor = colorarray[i];
                 document.getElementById(i).innerHTML = wordarray[i];
