@@ -11,15 +11,18 @@
     <br>
     <span id="roomspan"> You don't have a room yet! </span>
     <br>
-    <span id="rulespanmaster" style="display:none"> Spy Masters: Give a 1 word hint that relate together words on the grid that match their color as well as a number that
-        refers to how many words he/she is trying to connect together.</span>
+    <span id="rulespanmaster" style="display:none"> Spy Masters: Give a 1 word clue related to words on the grid that match your team's color. Also give a number indicating how many words your clue refers to.</span>
     <br>
-    <span id="rulespanregular" style="display:none"> Reguler Members: Using the 1 word clue, guess a word on the grid by clicking it, your turn ends if you guess a word that's
-        not your color. You get as many guesses as the number your Spy Master provides + 1.</span>
+    <span id="rulespanregular" style="display:none"> Reguler Members: Using the 1 word clue, guess a word on the grid by clicking it. Your turn ends if you guess a word that is not your color. You get as many guesses as the number your Spy Master provides + 1.
+      <br>
+    </span>
     <br>
     <span id="turnspan"> It's no one's turn! </span>
     <br>
     <span id="endspan" style="display:none"> </span>
+    <div id="startgameinfo" style="display:block">
+       Create a game or enter a Room ID and join a game.
+    </div>  
     <form>
         <div id="gamesetup" style="display:block">
             Room:
@@ -27,6 +30,7 @@
             <input type="text" name="roomname" id="roomname">
             <br>
     </form>
+
     <button type="button" id="createbutton">Create game</button>
     <button type="button" id="joinbutton">Join game</button>
     </div>
@@ -40,35 +44,35 @@
     </div>
 
     <div id="gametable" style="display:none">
-        <button id="0" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="1" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="2" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="3" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="4" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+        <button id="0" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="1" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="2" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="3" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="4" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
         <br>
-        <button id="5" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="6" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="7" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="8" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="9" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+        <button id="5" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="6" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="7" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="8" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="9" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
         <br>
-        <button id="10" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="11" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="12" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="13" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="14" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+        <button id="10" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="11" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="12" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="13" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="14" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
         <br>
-        <button id="15" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="16" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="17" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="18" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="19" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+        <button id="15" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="16" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="17" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="18" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="19" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
         <br>
-        <button id="20" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="21" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="22" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="23" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
-        <button id="24" onClick="checkword(this.id)" style="height:100px;width:100px"></button>
+        <button id="20" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="21" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="22" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="23" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
+        <button id="24" onClick="checkword(this.id)" style="height:60px;width:100px"></button>
 
         <br>
         <button id="endturn" onClick="endturnfunc(this)" style="display:none">End Turn</button>
@@ -114,7 +118,7 @@
             </table>
 
             <br>
-            <p>Enter your clue in the form: word number</p>
+            <p>Enter your clue in the form: word number (for example: 'fire 3')</p>
             Clue:
             <input type="text" id="clue">
             <button onclick="getinputtext()">Submit</button>
@@ -127,6 +131,7 @@
     <script src="https://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js"></script>
 
     <script>
+        document.getElementById("turnspan").style.fontWeight = "800";
         var socket = io();
         console.log("socket made");
         var wordarray;
@@ -171,7 +176,7 @@
             document.getElementById("roomspan").textContent = "RoomID: " + myroomID;
             //tell player their role
             if ((data.players.length - 1) === 0) {
-                document.getElementById("myspan").textContent = "Blue Spy Master";
+                document.getElementById("myspan").textContent = "You are the Blue Spy Master";
                 teamColor = "blue";
                 for (i = 0; i < 25; i++) {
                     document.getElementById(i).setAttribute('disabled', 'disabled');
@@ -180,7 +185,7 @@
                 xy.style.display = "block";
             }
             else if ((data.players.length - 1) === 1) {
-                document.getElementById("myspan").textContent = "Red Spy Master";
+                document.getElementById("myspan").textContent = "You are the Red Spy Master";
                 teamColor = "red";
                 for (i = 0; i < 25; i++) {
                     document.getElementById(i).setAttribute('disabled', 'disabled');
@@ -190,12 +195,12 @@
             }
             //even index = blue player
             else if ((data.players.length - 1) % 2 === 0) {
-                document.getElementById("myspan").textContent = "Blue Member";
+                document.getElementById("myspan").textContent = "You are the Blue Member";
                 teamColor = "blue";
             }
             //odd index = red player
             else if ((data.players.length - 1) % 2 === 1) {
-                document.getElementById("myspan").textContent = "Red Member";
+                document.getElementById("myspan").textContent = "You are the Red Member";
                 teamColor = "red";
             }
         });
@@ -219,7 +224,7 @@
         }
         function startfunc(button) {
             socket.emit('startgame', { roomName: myroomID });
-        }
+	}
 
         function endturnfunc(button) {
             socket.emit('captainSwap', { teamColor: teamColor, myRoomName: myroomID });
@@ -239,7 +244,9 @@
             x.style.display = "block";
             document.getElementById("startbutton").style.visibility = "hidden";
             var y = document.getElementById("gamesetup");
-            y.style.display = "none";
+	    y.style.display = "none";
+	    var z = document.getElementById("startgameinfo");
+            z.style.display = "none";
             document.getElementById("rulespanmaster").style.display = "inline";
             document.getElementById("rulespanregular").style.display = "inline";
             document.getElementById("turnspan").textContent = "Blue Spy Master's Turn: Enter your 1-word clue and number";
@@ -251,7 +258,7 @@
 
         socket.on('guessesLeft', function (data) {
             var num = data + 1;
-            document.getElementById("currentNumber").textContent = "Number of remaining guesses: " + num;
+            document.getElementById("currentNumber").textContent = "Number of guesses: " + num;
         });
 
         socket.on('clue', function (data) {
@@ -260,7 +267,7 @@
 
         socket.on('number', function (data) {
             var numguesses = data + 1;
-            document.getElementById("currentNumber").textContent = "Number of remaining guess: " + numguesses;
+            document.getElementById("currentNumber").textContent = "Number of guesses: " + numguesses;
         });
 
         socket.on('guessedTiles', function (data) {
@@ -274,28 +281,35 @@
         });
 
         socket.on('updatePrompt', function (data) {
-            if (data == 'blue') {
+	     if (data == 'blue') {
+				
                 document.getElementById("turnspan").textContent = "Blue Member's Turn: Click on a tile to guess that word";
-            }
+	     }
             else if (data == 'red') {
                 document.getElementById("turnspan").textContent = "Red Member's Turn: Click on a tile to guess that word";
-            }
+	    }
         });
 
         socket.on('updatePromptCaptain', function (data) {
             console.log('update captain prompt called');
             if (data == 'blue') {
                 document.getElementById('turnspan').textContent = "Blue Spy Master's Turn: Enter your 1-word clue and number";
-            }
+	    }
             else if (data == 'red') {
                 document.getElementById('turnspan').textContent = "Red Spy Master's Turn: Enter your 1-word clue and number";
-            }
+	    }
         });
 
         socket.on('endGame', function (data) {
             document.getElementById("endspan").style.display = "inline";
             document.getElementById("endspan").textContent = data + " team won!";
-            for (i = 0; i < 25; i++) {
+	if(data == "blue") {
+           document.body.style.background = blue;
+        }
+        if(data == "red") {
+           document.body.style.background = red;
+	}
+	    for (i = 0; i < 25; i++) {
                 document.getElementById(i).setAttribute('disabled', 'disabled');
             }
         });
